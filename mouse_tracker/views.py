@@ -1,10 +1,10 @@
+from django.http import HttpResponse, StreamingHttpResponse
 from django.shortcuts import render
-import cv2
+from django.template import loader
 import numpy as np
 import threading
 import gzip
-from django.http import HttpResponse, StreamingHttpResponse
-from django.template import loader
+import cv2
 
 # Create your views here.
 class VideoCamera(object):
@@ -44,5 +44,8 @@ def livefe(request):
     except:  # This is bad! replace it with proper handling
         pass
 
-# def stream(request):
-#     return render(request, 'polls/index.html', livefe())
+def stream(request):
+    context = {
+        'something': "something"
+    }
+    return render(request, 'mouse_tracker/index.html', context)
