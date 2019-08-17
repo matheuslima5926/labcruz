@@ -49,3 +49,4 @@ def stream(request):
         'something': "something"
     }
     return render(request, 'mouse_tracker/index.html', context)
+
