@@ -6,10 +6,13 @@ import threading
 import gzip
 import cv2
 
+subtractor = cv2.createBackgroundSubtractorMOG2(history = 100,	varThreshold = 8,	detectShadows = False )
+
 # Create your views here.
 class VideoCamera(object):
     def __init__(self):
         self.video = cv2.VideoCapture(0)
+        #self.video = cv2.VideoCapture("video.mp4")
         (self.grabbed, self.frame) = self.video.read()
         threading.Thread(target=self.update, args=()).start()
 
@@ -18,12 +21,17 @@ class VideoCamera(object):
 
     def get_frame(self):
         image = self.frame
+        #Flip Image Horizontally
+        image = cv2.flip(image, 1)
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
 
     def update(self):
         while True:
             (self.grabbed, self.frame) = self.video.read()
+
+    def desenharCaixa():
+        return False
 
 
 cam = VideoCamera()
@@ -50,3 +58,7 @@ def stream(request):
     }
     return render(request, 'mouse_tracker/index.html', context)
 
+
+## Simple Tracking
+greenLower = (29, 86, 6)
+greenUpper = (64, 255, 255)

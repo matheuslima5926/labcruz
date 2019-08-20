@@ -1,3 +1,42 @@
 h1 {
-    color: blue;
+    color: pink;
 }
+
+img {
+    width: 50%;
+}
+
+.body-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.content {
+    display: flex;
+    background-color: red;
+    height: 80vh;
+}
+
+.videoframe {
+    display: flex;
+    align-self: center;
+    flex: 4;
+}
+
+.video {
+    width: 100%;
+}
+
+.form {
+    flex: 2;
+    background-color: blue;
+}
+
+
