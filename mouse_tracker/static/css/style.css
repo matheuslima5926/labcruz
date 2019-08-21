@@ -20,7 +20,6 @@ img {
 
 .content {
     display: flex;
-    background-color: red;
     height: 80vh;
 }
 
@@ -35,8 +34,14 @@ img {
 }
 
 .form {
+    display: flex;
+    justify-content: center;
     flex: 2;
-    background-color: blue;
+    align-self: center;
+}
+
+form {
+    width: 90%;
 }
 
 
