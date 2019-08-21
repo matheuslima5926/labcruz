@@ -10,7 +10,25 @@
             <img class="videoframe video" src="{% url 'livefe' %}">
         </div>
         <div class="form">
-            
+            <form>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Distância (cm)</label>
+                  <input type="text" class="form-control" id="exampleInputDistancia" placeholder="0.0">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputVelocidade">Velocidade (cm/s)</label>
+                  <input type="text" class="form-control" id="exampleInputVelocidade" placeholder="0.0">
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Animal</label>
+                    <select class="form-control" id="exampleFormControlSelect1">
+                      <option>Cadena</option>
+                      <option>Matheus</option>
+                      <option>Ditt</option>
+                    </select>
+                  </div>
+                <button type="submit" class="btn btn-primary">Iniciar Teste</button>
+              </form>
         </div>
     </div>
 </div>
