@@ -14,7 +14,11 @@ class VideoCamera(object):
         self.video = cv2.VideoCapture(0)
         #self.video = cv2.VideoCapture("video.mp4")
         (self.grabbed, self.frame) = self.video.read()
+        if self.grabbed == None or self.frame.any() == None:
+            print("Deu ruim mano")
+
         threading.Thread(target=self.update, args=()).start()
+        
 
     def __del__(self):
         self.video.release()
