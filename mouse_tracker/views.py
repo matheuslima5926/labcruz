@@ -46,6 +46,7 @@ class VideoCamera(object):
     #SE image FOR NULO, RETORNA UM .jpg VAZIO (Se nao, quando acaba o video da pau em tudo)
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
+    
 
     def update(self):
         while True:
@@ -54,11 +55,14 @@ class VideoCamera(object):
 cam = VideoCamera()
 
 def gen(camera):
-    while True:
-        frame = cam.get_frame()
-     
-        yield(b'--frame\r\n'
-        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+    try:
+        while True:
+            frame = cam.get_frame()
+        
+            yield(b'--frame\r\n'
+            b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+    except:
+        return
 
 def livefe(request):
     try:
