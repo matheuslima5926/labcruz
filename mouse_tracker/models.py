@@ -32,6 +32,7 @@ class Maze(models.Model):
         return self.nickname
 
 
+
 class Test(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.PROTECT)
     maze = models.ForeignKey(Maze, null=True, on_delete=models.SET_NULL)

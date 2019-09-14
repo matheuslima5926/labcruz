@@ -1,4 +1,5 @@
-from django.http import HttpResponse, StreamingHttpResponse
+from django.http import HttpResponse, StreamingHttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render
 from django.template import loader
 import numpy as np
@@ -51,18 +52,21 @@ class VideoCamera(object):
     def update(self):
         while True:
             self.grabbed, self.frame = self.video.read()
+
   
 cam = VideoCamera()
+
 
 def gen(camera):
     try:
         while True:
             frame = cam.get_frame()
         
-            yield(b'--frame\r\n'
-            b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+            yield(b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + 
+            b'\r\n\r\n')
     except:
         return
+
 
 def livefe(request):
     try:
@@ -75,3 +79,16 @@ def stream(request):
         'something': "something"
     }
     return render(request, 'mouse_tracker/index.html', context)
+
+
+def get_area_selected(request):
+    initX = request.POST.get('initX')
+    initY = request.POST.get('ínitY')
+    areaW = request.POST.get('areaWidth')
+    areaH = request.POST.get('areaHeight')
+    print("ROI area: Initial X: %s, Initial Y: %s, Width: %s, Height: %s" % (initX, initY, areaW, areaH))
+    data = {}
+    return JsonResponse(data)
+   
+    
+

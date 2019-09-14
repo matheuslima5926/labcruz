@@ -40,3 +40,46 @@ function draw() {
 }
 
 init();
+
+var csrftoken = Cookies.get('csrftoken');
+console.log(csrftoken);
+
+function cancelAreaSelected() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+function confirmAreaSelected() {
+    var initX = rect.startX
+    var initY = rect.startY
+    var areaWidth = rect.w
+    var areaHeight = rect.h
+    $.ajax({
+        type: "POST",
+        url: "/get_area",
+        data: {
+            'initX': initX,
+            'initY': initY,
+            'areaWidth': areaWidth,
+            'areaHeight': areaHeight,
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        dataType: 'json',
+        // beforeSend: function() {
+        //     console.log("Aqui esta o valor: " + rect.startX);
+        // },
+        success: function (data) {
+        }
+    });
+}
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
