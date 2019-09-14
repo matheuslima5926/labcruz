@@ -9,22 +9,7 @@
       <img id="ratVideo" width="848" height="480"  class="videoframe video" src="{% url 'livefe' %}">
       <canvas id="myCanvas" width="848" height="480">
     </div>
-    {% csrf_token %}
-    <button id="confirmAreaBtn" onclick="confirmAreaSelected()">Confirma</button>
-    <!-- <form method="POST" action="{% url 'get_area'}">
-        {% csrf_token %}
-        <button id="confirmAreaBtn" onclick="confirmAreaSelected()">Confirma</button>
-         <input type="submit" value="Confirma">
-        <button id="cancelAreaBtn" onclick="cancelAreaSelected()">Cancel</button>
-    </form> -->
     
-    <!-- <div class="confirm">
-      <form id="test" action="{% url 'get_area_selected' %}" method="POST">
-        <!-- {% csrf_token %}
-        <input type="submit" value="Confirm">
-        
-      </form>
-    </div> -->
     <div class="form">
             <form>
                 <div class="form-group">
@@ -45,6 +30,9 @@
                   </div>
                 <button type="submit" class="btn btn-primary">Iniciar Teste</button>
               </form>
+        </div>
+        <div class="areaSelection">
+            <button id="confirmAreaBtn" onclick="confirmAreaSelected()">Confirma</button>
         </div>
   </div>
 </div>
