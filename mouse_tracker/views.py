@@ -1,5 +1,4 @@
 from django.http import HttpResponse, StreamingHttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render
 from django.template import loader
 import numpy as np
@@ -10,9 +9,11 @@ import cv2
 subtractor = cv2.createBackgroundSubtractorMOG2( detectShadows = False)
 test = 0
 # Create your views here.
-class VideoCamera(object):
+class VideoCapture(object):
     def __init__(self):
         self.video = cv2.VideoCapture("video.mp4")
+        if self.video:
+            print("Getting Video")
 
     def __del__(self):
         self.video.release()
@@ -53,37 +54,31 @@ class VideoCamera(object):
         while True:
             self.grabbed, self.frame = self.video.read()
 
-  
-cam = VideoCamera()
+cam = VideoCapture()
 
 
-def gen(camera):
+def gen(tracker):
     try:
         while True:
-            frame = cam.get_frame()
+            frame = tracker.get_frame()
         
             yield(b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + 
             b'\r\n\r\n')
     except:
         return
-
-
 def livefe(request):
     try:
-        return StreamingHttpResponse(gen(VideoCamera()),content_type="multipart/x-mixed-replace;boundary=frame")
+        return StreamingHttpResponse(gen(VideoCapture()),content_type="multipart/x-mixed-replace;boundary=frame")
     except:  
         pass
-
 def stream(request):
     context = {
         'something': "something"
     }
     return render(request, 'mouse_tracker/index.html', context)
-
-
 def get_area_selected(request):
     initX = request.POST.get('initX')
-    initY = request.POST.get('ínitY')
+    initY = request.POST.get('initY')
     areaW = request.POST.get('areaWidth')
     areaH = request.POST.get('areaHeight')
     print("ROI area: Initial X: %s, Initial Y: %s, Width: %s, Height: %s" % (initX, initY, areaW, areaH))
