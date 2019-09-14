@@ -1,15 +1,15 @@
-
 {% extends 'mouse_tracker/base.html' %}
 {% block content %}
 <div class="container">
-    <div class="header">
-        <h1>Mouse Tracking</h1>
+  <div class="header">
+    <h1>Mouse Tracking</h1>
+  </div>
+  <div class="content">
+    <div class="videoframe">
+      <img id="ratVideo" width="848" height="480"  class="videoframe video" src="{% url 'livefe' %}">
+      <canvas id="myCanvas" width="848" height="480">
     </div>
-    <div class="content">
-        <div class="videoframe">
-            <img class="videoframe video" src="{% url 'livefe' %}">
-        </div>
-        <div class="form">
+    <div class="form">
             <form>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Distância (cm)</label>
@@ -30,7 +30,7 @@
                 <button type="submit" class="btn btn-primary">Iniciar Teste</button>
               </form>
         </div>
-    </div>
+  </div>
 </div>
 {% endblock %}
 {% load static %}
