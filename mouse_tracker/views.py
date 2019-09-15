@@ -11,8 +11,8 @@ subtractor = cv2.createBackgroundSubtractorMOG2(history = 100,	varThreshold = 8,
 # Create your views here.
 class VideoCamera(object):
     def __init__(self):
-        self.video = cv2.VideoCapture(0)
-        #self.video = cv2.VideoCapture("video.mp4")
+        # self.video = cv2.VideoCapture(0)
+        self.video = cv2.VideoCapture("video.mp4")
         (self.grabbed, self.frame) = self.video.read()
         threading.Thread(target=self.update, args=()).start()
 
