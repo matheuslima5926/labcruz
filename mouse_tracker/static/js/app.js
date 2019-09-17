@@ -64,9 +64,20 @@ function confirmAreaSelected() {
             csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
         },
         dataType: 'json',
-        // beforeSend: function() {
-        //     console.log("Aqui esta o valor: " + rect.startX);
-        // },
+        success: function (data) {
+        }
+    });
+}
+
+function startTest() {
+    $.ajax({
+        type: "POST",
+        url: "/analyse",
+        data: {
+            'startTest': "true",
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        dataType: 'json',
         success: function (data) {
         }
     });
