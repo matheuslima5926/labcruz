@@ -2,22 +2,33 @@
 {% block content %}
 <div class="container">
   <div class="header">
-    <!-- <h1>Mouse Tracking</h1> -->
   </div>
   <div class="content">
+
     <div class="videoframe">
-      {% if startAnalysis %}
-        <img id="ratVideo" width="848" height="480" class="videoframe video" src="{% url 'analysis' %}">
+      <img id="ratVideo" width="848" height="480" class="videoframe video" src="{% url 'analise' %}">
+      <!-- {% if videoSource == 'camera' %}
+        <!-- <img id="ratVideo" width="848" height="480" class="videoframe video" src="{% url 'analise' %}"> -->
+        <!-- {% if startAnalysis %}
+          <img id="ratVideo" width="848" height="480" class="videoframe video" src="{% url 'analise' %}">
         {% else %}
-        <img id="ratVideo" width="848" height="480" class="videoframe video" src="{% url 'livefe' %}">
-      {% endif %}
+          <img id="ratVideo" width="848" height="480" class="videoframe video" src="{% url 'streamWA' %}">
+        {% endif %}
+      {% else %}
+        {% if startAnalysis %}
+          <img id="ratVideo" width="848" height="480" class="videoframe video" src="{% url 'analysis' %}">
+        {% else %}
+          <img id="ratVideo" width="848" height="480" class="videoframe video" src="{% url 'livefe' %}">
+        {% endif %}
+      {% endif %} -->
       <canvas id="myCanvas" width="848" height="480">
     </div>
 
 
+
     <div class="form">
       <form action="{% url 'stream' %}" method="POST">
-          {% csrf_token %}
+        {% csrf_token %}
         <div class="form-group">
           <label for="exampleInputPassword1">Distância (cm)</label>
           <input type="text" class="form-control" id="exampleInputDistancia" placeholder="0.0">
