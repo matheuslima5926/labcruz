@@ -49,10 +49,10 @@ class Analysis(View):
         mazeSelectedArea.areaW = request.POST.get('areaWidth')
         mazeSelectedArea.areaH = request.POST.get('areaHeight')
         roi_array = []
-        roi_array.append(mazeSelectedArea.initX)
-        roi_array.append(mazeSelectedArea.initY)
-        roi_array.append(mazeSelectedArea.areaW)
-        roi_array.append(mazeSelectedArea.areaH)
+        roi_array.append(int(mazeSelectedArea.initX))
+        roi_array.append(int(mazeSelectedArea.initY))
+        roi_array.append(int(mazeSelectedArea.areaW))
+        roi_array.append(int(mazeSelectedArea.areaH))
         TestSetup.getInstance.roi = roi_array
         print("TestSetup videoPath %s" % (TestSetup.getInstance.videoPath))
         print("TestSetup roi %s" % (TestSetup.getInstance.roi))
