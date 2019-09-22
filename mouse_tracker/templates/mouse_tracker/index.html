@@ -2,38 +2,38 @@
 {% block content %}
 <div class="container">
   <div class="header">
-    <h1>Mouse Tracking</h1>
   </div>
   <div class="content">
+
     <div class="videoframe">
-      <img id="ratVideo" width="848" height="480"  class="videoframe video" src="{% url 'livefe' %}">
+        <img id="ratVideo" width="848" height="480" class="videoframe video" src="{% url 'stream_image' %}">
       <canvas id="myCanvas" width="848" height="480">
     </div>
-    
     <div class="form">
-            <form>
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Distância (cm)</label>
-                  <input type="text" class="form-control" id="exampleInputDistancia" placeholder="0.0">
-                </div>
-                <div class="form-group">
-                  <label for="exampleInputVelocidade">Velocidade (cm/s)</label>
-                  <input type="text" class="form-control" id="exampleInputVelocidade" placeholder="0.0">
-                </div>
-                <div class="form-group">
-                    <label for="exampleFormControlSelect1">Animal</label>
-                    <select class="form-control" id="exampleFormControlSelect1">
-                      <option>Cadena</option>
-                      <option>Matheus</option>
-                      <option>Ditt</option>
-                    </select>
-                  </div>
-                <button type="submit" class="btn btn-primary">Iniciar Teste</button>
-              </form>
+      <form action="{% url 'getROI' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="exampleInputPassword1">Distância (cm)</label>
+          <input type="text" class="form-control" id="exampleInputDistancia" placeholder="0.0">
         </div>
-        <div class="areaSelection">
-            <button id="confirmAreaBtn" onclick="confirmAreaSelected()">Confirma</button>
+        <div class="form-group">
+          <label for="exampleInputVelocidade">Velocidade (cm/s)</label>
+          <input type="text" class="form-control" id="exampleInputVelocidade" placeholder="0.0">
         </div>
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Animal</label>
+          <select class="form-control" id="exampleFormControlSelect1">
+            <option>Cadena</option>
+            <option>Matheus</option>
+            <option>Ditt</option>
+          </select>
+        </div>
+        <input type="submit" id="iniciar" onclick="confirmAreaSelected()" value="Iniciar Teste" class="btn btn-primary">
+      </form>
+    </div>
+    <!-- <div class="areaSelection">
+      <button id="confirmAreaBtn" onclick="confirmAreaSelected()">Confirma</button>
+    </div> -->
   </div>
 </div>
 {% endblock %}
