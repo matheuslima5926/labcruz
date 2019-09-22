@@ -93,6 +93,24 @@ function mouseUp() {
     console.log("inicial Y: " + rect.startY);
     console.log("rect Width: " + rect.w);
     console.log("rect Height: " + rect.h);
+    var initX = rect.startX
+    var initY = rect.startY
+    var areaWidth = rect.w
+    var areaHeight = rect.h
+    $.ajax({
+        type: "POST",
+        url: "/getROI",
+        data: {
+            'initX': initX,
+            'initY': initY,
+            'areaWidth': areaWidth,
+            'areaHeight': areaHeight,
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        dataType: 'json',
+        success: function (data) {
+        }
+    });
 }
 function mouseMove(e) {
   if (drag) {

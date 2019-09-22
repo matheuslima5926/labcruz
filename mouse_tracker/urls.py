@@ -8,6 +8,7 @@ urlpatterns = [
 
     #Rota para capturar area selecionada
     path('getROI', Analysis.getROIArea, name='getROI'),
+    path('start_test', Analysis.startTest, name="start_test"),
 
     #Rota que faz o stream do Teste
     path('stream_image', Analysis.streamImage, name="stream_image"),

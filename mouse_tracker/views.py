@@ -59,8 +59,8 @@ class Analysis(View):
 
         print("ROIIIII area: Initial X: %s, Initial Y: %s, Width: %s, Height: %s" % (mazeSelectedArea.initX, mazeSelectedArea.initY, mazeSelectedArea.areaW, mazeSelectedArea.areaH))
         data = {}
-
-        return render(request, 'mouse_tracker/index.html', {})
+        return JsonResponse({})
+        # return render(request, 'mouse_tracker/index.html', {})
 
     def streamImage(request):
         try:
@@ -77,6 +77,11 @@ class Analysis(View):
                 return StreamingHttpResponse(generateFrames(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi)),content_type="multipart/x-mixed-replace;boundary=frame")
         except:
             pass
+
+    def startTest(request):
+        print(TestSetup.getInstance.roi)
+        return render(request, 'mouse_tracker/index.html', {})
+
 
 #Métodos relacionados a Câmera IP
 class CameraIPAnalysis(Analysis):

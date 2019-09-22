@@ -10,7 +10,7 @@
       <canvas id="myCanvas" width="848" height="480">
     </div>
     <div class="form">
-      <form action="{% url 'getROI' %}" method="POST">
+      <form action="{% url 'start_test' %}" method="POST">
         {% csrf_token %}
         <div class="form-group">
           <label for="exampleInputPassword1">Distância (cm)</label>
