@@ -14,7 +14,7 @@ function confirmAreaSelected() {
     var areaHeight = rect.h
     $.ajax({
         type: "POST",
-        url: "/get_area",
+        url: "/getROI",
         data: {
             'initX': initX,
             'initY': initY,

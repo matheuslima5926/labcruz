@@ -10,13 +10,9 @@ import cv2
 subtractor = cv2.createBackgroundSubtractorMOG2( detectShadows = False)
 test = 0
 class Tracker(object):
-    def __init__(self, live=False, videoPath="video.mp4", roi=None):
-        if live == True:
-            print("Live camera!!!")
-            self.video = cv2.VideoCapture(0)
-        else:
-            print("Video Path!!!!")
-            self.video = cv2.VideoCapture(videoPath)
+    def __init__(self, videoPath=None, roi=None):
+        self.video = cv2.VideoCapture(videoPath)
+        
 
     def __del__(self):
         self.video.release()
