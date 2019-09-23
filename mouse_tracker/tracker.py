@@ -12,13 +12,18 @@ test = 0
 class Tracker(object):
     roi = None
     backSub = cv2.createBackgroundSubtractorKNN()
+    centerX = 0
+    centerY = 0
     def __init__(self, videoPath=None, roi=None):
         self.video = cv2.VideoCapture(videoPath)
 
         if roi:
             print("Atribuindo ROI!")
             self.roi = roi
-        print(self.roi)
+            self.centerX = self.roi[2] / 2
+            self.centerY = self.roi[3] / 2
+            print("Altura %s" % (self.roi[3]))
+            print("Width %s" % (self.roi[2]))
 
     def __del__(self):
         self.video.release()
@@ -30,7 +35,6 @@ class Tracker(object):
     def get_frame(self):
         if self.roi:
             ret, frame = self.video.read()
-
             image_delimited = frame[int(self.roi[1]):int(self.roi[1] + self.roi[3]), int(self.roi[0]):int(self.roi[0] + self.roi[2])]
             
             if frame is None:
@@ -40,15 +44,23 @@ class Tracker(object):
             fgMask = self.backSub.apply(image_delimited)
             contours, hierarchy = cv2.findContours(fgMask.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
 
-            #mostra o numero de frames e mais umas coisaradas
-            # cv2.putText(frame, str(capture.get(cv2.CAP_PROP_POS_FRAMES)), (15, 15),
-            #         cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,0,0))
             #desenha o retangulo
             for c in contours:
                 if cv2.contourArea(c) < 500:
                     continue
                 (x, y, w, h) = cv2.boundingRect(c)
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                if h * w > 7600:
+                    continue
+                if y > self.centerY + 20:
+                    print("Baixo")
+                if y < self.centerY - 20:
+                    print("Cima")
+                if x > self.centerX + 30:
+                    print("Direita")
+                if x < self.centerX - 30:
+                    print("Esquerda")
+                cv2.rectangle(image_delimited, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                
                 continue
 
             ret, jpeg = cv2.imencode('.jpg', frame)
@@ -59,7 +71,7 @@ class Tracker(object):
         #     image_delimited = image[int(self.roi[1]):int(self.roi[1] + self.roi[3]), int(self.roi[0]):int(self.roi[0] + self.roi[2])]
             
         #     #APLICA O SUBTRACTOR
-        #     mask = subtractor.apply(image_delimited)
+        #     mask = subtractor.apply(image)
 
         #     #REDUZ O RUIDO COM MORPHOLOGY
         #     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, None)
@@ -80,7 +92,7 @@ class Tracker(object):
 
         #         if cv2.contourArea(c) > 2000 and cv2.contourArea(c) < 50000:
         #             (x, y, w, h) = cv2.boundingRect(c)
-        #             cv2.rectangle(image_delimited, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        #             cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
         #             continue
         #     #SE image FOR NULO, RETORNA UM .jpg VAZIO (Se nao, quando acaba o video da pau em tudo)
         #     ret, jpeg = cv2.imencode('.jpg', image)
