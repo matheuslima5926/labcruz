@@ -14,6 +14,7 @@ class Tracker(object):
     backSub = cv2.createBackgroundSubtractorKNN()
     centerX = 0
     centerY = 0
+    firstFrame = None
     def __init__(self, videoPath=None, roi=None):
         self.video = cv2.VideoCapture(videoPath)
 
@@ -39,26 +40,38 @@ class Tracker(object):
             
             if frame is None:
                 return
+
+            # gray = cv2.cvtColor(image_delimited, cv2.COLOR_BGR2GRAY)
+            gray = cv2.GaussianBlur(image_delimited, (11, 11), 0)
             
             #aplica a subtração
-            fgMask = self.backSub.apply(image_delimited)
-            contours, hierarchy = cv2.findContours(fgMask.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-
+            fgMask = self.backSub.apply(gray)
+            thresh = cv2.threshold(fgMask, 11, 255, cv2.THRESH_BINARY)[1]
+            thresh = cv2.dilate(thresh, None, iterations=2)
+            # thresh = cv2.erode(thresh, None, iterations=2)
+            contours, hierarchy = cv2.findContours(thresh.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+            if not contours:
+                print("Nada sendo detectado!")
             #desenha o retangulo
             for c in contours:
                 if cv2.contourArea(c) < 500:
                     continue
+                M = cv2.moments(c)
+                cX = int(M["m10"] / M["m00"])
+                cY = int(M["m01"] / M["m00"])
+                cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
+                # print("Center %s" % (str(M)))
                 (x, y, w, h) = cv2.boundingRect(c)
                 if h * w > 7600:
                     continue
-                if y > self.centerY + 20:
-                    print("Baixo")
-                if y < self.centerY - 20:
-                    print("Cima")
-                if x > self.centerX + 30:
-                    print("Direita")
-                if x < self.centerX - 30:
-                    print("Esquerda")
+                # if y > self.centerY + 20:
+                #     print("Baixo")
+                # if y < self.centerY - 20:
+                #     print("Cima")
+                # if x > self.centerX + 30:
+                #     print("Direita")
+                # if x < self.centerX - 30:
+                #     print("Esquerda")
                 cv2.rectangle(image_delimited, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 
                 continue
