@@ -23,15 +23,7 @@ class TestSetup:
         return TestSetup.__instance
 
     def __init__(self):
-<<<<<<< HEAD
         self.video = cv2.VideoCapture(r"C:\Users\edure\labcruz_backend\mouse_tracker\video.mp4")
-=======
-        """ Virtually private constructor. """
-        if TestSetup.__instance != None:
-           raise Exception("This class is a singleton!")
-        else:
-           TestSetup.__instance = self
->>>>>>> 934b337fe792251e07cced7aa44fdfb0fa419bc8
 
 class MazeAreaDimension():
     initX = 0
