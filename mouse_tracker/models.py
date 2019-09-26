@@ -32,6 +32,13 @@ class Maze(models.Model):
         return self.nickname
 
 
+class MazeAreaSelection(models.Model):
+    initX = models.IntegerField(default=0)
+    initY = models.IntegerField(default=0)
+    areaW = models.IntegerField(default=0)
+    areaH = models.IntegerField(default=0)
+
+
 
 class Test(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.PROTECT)
