@@ -14,6 +14,10 @@ class Tracker(object):
     backSub = cv2.createBackgroundSubtractorKNN()
     centerX = 0
     centerY = 0
+    minRangeY = 0
+    maxRangeY = 0
+    minRangeX = 0
+    maxRangeX = 0
     firstFrame = None
     def __init__(self, videoPath=None, roi=None):
         self.video = cv2.VideoCapture(videoPath)
@@ -23,6 +27,20 @@ class Tracker(object):
             self.roi = roi
             self.centerX = self.roi[2] / 2
             self.centerY = self.roi[3] / 2
+            self.minRangeX = self.centerX - ( self.centerX * 7.5 ) / 100 
+            self.maxRangeX = self.centerX + ( self.centerX * 7.5 ) / 100 
+            self.minRangeY = self.centerY - ( self.centerY * 7.5 ) / 100 
+            self.maxRangeY = self.centerY + ( self.centerY * 7.5 ) / 100 
+
+
+
+            print("Centro Y:{}".format(self.centerY))
+            print("Centro X:{}".format(self.centerX))
+            print("Inicio Faixa Y:{}".format(self.minRangeY))
+            print("Fim Faixa Y:{}".format(self.maxRangeY))
+            print("Inicio Faixa X:{}".format(self.minRangeX))
+            print("Fim Faixa X:{}".format(self.maxRangeX))
+            print("Centro X:{}".format(self.centerX))
             print("Altura %s" % (self.roi[3]))
             print("Width %s" % (self.roi[2]))
 
@@ -46,12 +64,12 @@ class Tracker(object):
             
             #aplica a subtração
             fgMask = self.backSub.apply(gray)
-            thresh = cv2.threshold(fgMask, 11, 255, cv2.THRESH_BINARY)[1]
+            thresh = cv2.threshold(fgMask, 0, 200, cv2.THRESH_BINARY)[1]
             thresh = cv2.dilate(thresh, None, iterations=2)
             # thresh = cv2.erode(thresh, None, iterations=2)
             contours, hierarchy = cv2.findContours(thresh.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-            if not contours:
-                print("Nada sendo detectado!")
+            # if not contours:
+            #     print("Nada sendo detectado!")
             #desenha o retangulo
             for c in contours:
                 if cv2.contourArea(c) < 500:
@@ -64,14 +82,27 @@ class Tracker(object):
                 (x, y, w, h) = cv2.boundingRect(c)
                 if h * w > 7600:
                     continue
-                # if y > self.centerY + 20:
-                #     print("Baixo")
-                # if y < self.centerY - 20:
-                #     print("Cima")
-                # if x > self.centerX + 30:
-                #     print("Direita")
-                # if x < self.centerX - 30:
-                #     print("Esquerda")
+                if cY > self.centerY + 30 and self.minRangeX <= cX <= self.maxRangeX:
+                    print("Baixo")
+
+                    # confirmaBaixo += 1
+                    # if confirmaBaixo == 3:
+                    #     confirmaDireita = 0
+                    #     confirmaCima = 0
+                    #     confirmaEsquerda = 0
+                    #     #ativa funcao javascript start cronometro
+                    #     request.post["cima"]
+
+                elif cY < self.centerY - 30 and self.minRangeX <= cX <= self.maxRangeX:
+                    print("Cima")
+
+                elif cX > self.centerX + 30 and self.minRangeY <= cY <= self.maxRangeY:
+                    print("Direita")
+                
+                elif cX < self.centerX - 30 and self.minRangeY <= cY <= self.maxRangeY:
+                    print("Esquerda")
+                
+                
                 cv2.rectangle(image_delimited, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 
                 continue

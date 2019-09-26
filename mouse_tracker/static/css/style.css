@@ -61,14 +61,6 @@ form {
     background-color: green;
 }
 
-.option_btn {
-    width: 45%;
-    height: 180px;
-    border-radius: 5px;
-    background-color: #CCE6EE;
-    border: 1px solid rgb(128, 195, 216);
-}
-
 .filepath {
     background-color: red;
     flex: 1;
@@ -117,4 +109,50 @@ form {
     margin-right: 0;
 }
 
+/* HOME */
+.home-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.option_btn,
+.option_btn::after {
+  -webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.option_btn {
+    width: 45%;
+    height: 180px;
+    border-radius: 3px;
+    background-color: #CCE6EE;
+    border: 1px solid rgb(128, 195, 216);
+    font-weight: bold;
+    position: relative;
+    color: rgb(63, 136, 158);
+}
+
+.option_btn:hover {
+    background-color: rgb(133, 178, 192);
+    color: black;
+}
+
+.option_btn::after {
+    height: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+
+.option_btn:hover:after {
+    height: 100%;
+}
+
+.btn-transparent {
+    border: none;
+    background-color: transparent;
+}
 
