@@ -1,5 +1,6 @@
 /.vscode
-/__pycache__
-/migrations
+labcruz/__pycache__
+/mouse_tracker/__pycache__
+/mouse_tracker/migrations/__pycache__
 /newenv
 *.mp4
