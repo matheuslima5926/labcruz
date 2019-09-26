@@ -11,7 +11,7 @@ test = 0
 # Create your views here.
 class VideoCamera(object):
     def __init__(self):
-        self.video = cv2.VideoCapture("video.mp4")
+        self.video = cv2.VideoCapture(r"C:\Users\edure\labcruz_backend\mouse_tracker\video.mp4")
 
     def __del__(self):
         self.video.release()
