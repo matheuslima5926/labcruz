@@ -1,3 +1,10 @@
 {
+<<<<<<< HEAD
     "python.pythonPath": "C:\\Python\\Python37\\python.exe"
+=======
+    "python.pythonPath": "/usr/local/bin/python3",
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": false,
+    "python.linting.pep8Enabled": true
+>>>>>>> 934b337fe792251e07cced7aa44fdfb0fa419bc8
 }
