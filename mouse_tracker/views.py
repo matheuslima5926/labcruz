@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.template import loader
 from django.views import generic, View
 from .tracker import Tracker
+import time
 
 class TestSetup:
     __instance = None
@@ -129,6 +130,7 @@ def generateFrames(tracker):
     try:
         while True:
             frame = tracker.get_frame()
+            time.sleep(0.010)
             yield(b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + 
             b'\r\n\r\n')
     except:

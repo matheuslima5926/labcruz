@@ -4,6 +4,7 @@ from django.template import loader
 from django.views import generic
 import numpy as np
 import threading
+import time
 import gzip
 import cv2
 
@@ -19,8 +20,29 @@ class Tracker(object):
     minRangeX = 0
     maxRangeX = 0
     firstFrame = None
+    confirmCima = 0
+    confirmBaixo = 0
+    confirmDireita = 0
+    confirmEsquerda = 0
+    confirmCentro = 0
+    isCima = False
+    isBaixo = False
+    isDireita = False
+    isEsquerda = False
+    isCentro = True
+
     def __init__(self, videoPath=None, roi=None):
         self.video = cv2.VideoCapture(videoPath)
+        fps = self.video.get(cv2.CAP_PROP_FPS)      # OpenCV2 version 2 used "CV_CAP_PROP_FPS"
+        frame_count = int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))
+        duration = frame_count/fps
+
+        print('fps = ' + str(fps))
+        print('number of frames = ' + str(frame_count))
+        print('duration (S) = ' + str(duration))
+        minutes = int(duration/60)
+        seconds = duration%60
+        print('duration (M:S) = ' + str(minutes) + ':' + str(seconds))
 
         if roi:
             print("Atribuindo ROI!")
@@ -33,7 +55,8 @@ class Tracker(object):
             self.maxRangeY = self.centerY + ( self.centerY * 7.5 ) / 100 
 
 
-
+            print("Largura: {}".format(self.roi[2]))
+            print("Altura: {}".format(self.roi[3]))
             print("Centro Y:{}".format(self.centerY))
             print("Centro X:{}".format(self.centerX))
             print("Inicio Faixa Y:{}".format(self.minRangeY))
@@ -53,6 +76,8 @@ class Tracker(object):
     """
     def get_frame(self):
         if self.roi:
+            start_time = time.clock()
+            
             ret, frame = self.video.read()
             image_delimited = frame[int(self.roi[1]):int(self.roi[1] + self.roi[3]), int(self.roi[0]):int(self.roi[0] + self.roi[2])]
             
@@ -77,36 +102,99 @@ class Tracker(object):
                 M = cv2.moments(c)
                 cX = int(M["m10"] / M["m00"])
                 cY = int(M["m01"] / M["m00"])
-                cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
+                if self.isCentro:
+                    if self.minRangeY <= cY <= self.maxRangeY and self.minRangeX <= cX <= self.maxRangeX:
+                        cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
+                else:
+                    cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
                 # print("Center %s" % (str(M)))
                 (x, y, w, h) = cv2.boundingRect(c)
                 if h * w > 7600:
                     continue
-                if cY > self.centerY + 30 and self.minRangeX <= cX <= self.maxRangeX:
-                    print("Baixo")
+                
+                if self.minRangeY <= cY <= self.maxRangeY and self.minRangeX <= cX <= self.maxRangeX:
+                    self.confirmCentro += 1
+                    if self.confirmCentro == 3:
+                        # print(time.clock())
+                        self.isCentro = True
+                        self.isBaixo = False
+                        self.isCima = False
+                        self.isDireita = False
+                        self.isEsquerda = False
+                        self.confirmCima = 0
+                        self.confirmDireita = 0
+                        self.confirmEsquerda = 0
+                        self.confirmBaixo = 0
+                        # print("Centro")
+                        # self.triggerTimer("centro")
 
-                    # confirmaBaixo += 1
-                    # if confirmaBaixo == 3:
-                    #     confirmaDireita = 0
-                    #     confirmaCima = 0
-                    #     confirmaEsquerda = 0
-                    #     #ativa funcao javascript start cronometro
-                    #     request.post["cima"]
+                elif cY > self.centerY + 30 and self.minRangeX <= cX <= self.maxRangeX:
+                    self.confirmBaixo += 1
+                    if self.confirmBaixo == 2:
+                        # print(time.clock())
+                        self.isBaixo = True
+                        self.isCima = False
+                        self.isDireita = False
+                        self.isEsquerda = False
+                        self.isCentro = False
+                        self.confirmCima = 0
+                        self.confirmDireita = 0
+                        self.confirmEsquerda = 0
+                        self.confirmCentro = 0
+                        # self.triggerTimer("centro")
+                        # print("Baixo")
 
                 elif cY < self.centerY - 30 and self.minRangeX <= cX <= self.maxRangeX:
-                    print("Cima")
+                    self.confirmCima += 1
+                    if self.confirmCima == 3:
+                        # print(time.clock())
+                        self.isCima = True
+                        self.isBaixo = False
+                        self.isDireita = False
+                        self.isEsquerda = False
+                        self.isCentro = False
+                        self.confirmBaixo = 0
+                        self.confirmDireita = 0
+                        self.confirmEsquerda = 0
+                        self.confirmCentro = 0
+                        # self.triggerTimer("centro")
+                        # print("Cima")
 
                 elif cX > self.centerX + 30 and self.minRangeY <= cY <= self.maxRangeY:
-                    print("Direita")
+                    self.confirmDireita += 1
+                    if self.confirmDireita == 3:
+                        # print(time.clock())
+                        self.isDireita = True
+                        self.isBaixo = False
+                        self.isCima = False
+                        self.isEsquerda = False
+                        self.isCentro = False
+                        self.confirmCima = 0
+                        self.confirmBaixo = 0
+                        self.confirmEsquerda = 0
+                        self.confirmCentro = 0
+                        # self.triggerTimer("centro")
+                        # print("Direita")
                 
                 elif cX < self.centerX - 30 and self.minRangeY <= cY <= self.maxRangeY:
-                    print("Esquerda")
-                
-                
+                    self.confirmEsquerda += 1
+                    if self.confirmEsquerda == 3:
+                        # print(time.clock())
+                        self.isEsquerda = True
+                        self.isBaixo = False
+                        self.isCima = False
+                        self.isDireita = False
+                        self.confirmCima = 0
+                        self.confirmBaixo = 0
+                        self.confirmDireita = 0
+                        self.confirmCentro = 0
+                        # self.triggerTimer("centro")
+                        # print("Esquerda")
+
                 cv2.rectangle(image_delimited, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 
                 continue
-
+            # print(time.clock() - start_time, "seconds")
             ret, jpeg = cv2.imencode('.jpg', frame)
             return jpeg.tobytes()
 
@@ -153,3 +241,12 @@ class Tracker(object):
     def update(self):
         while True:
             self.grabbed, self.frame = self.video.read()
+
+    def triggerTimer(location):
+        print("Chamou função")
+        return
+        # return JsonResponse({'direction': str(location)})
+
+# tempo no centro
+# numero sde cruzamento no centro
+# porcentagem de permanencia em cada braço

@@ -31,6 +31,14 @@
         <input type="submit" id="iniciar" onclick="confirmAreaSelected()" value="Iniciar Teste" class="btn btn-primary">
       </form>
     </div>
+    <div class="timer">
+      <h3>This is a timer</h3>
+      <form action="{% url 'timer' %}">
+        {% if location %}
+        <h4>timer caraio!!!</h4>
+        {% endif %}        
+      </form>
+    </div>
     <!-- <div class="areaSelection">
       <button id="confirmAreaBtn" onclick="confirmAreaSelected()">Confirma</button>
     </div> -->

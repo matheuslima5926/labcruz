@@ -98,7 +98,7 @@ form {
 .home-filepath {
     display: none;
     justify-content: space-between;
-    background-color: blue;
+    /* background-color: blue; */
 }
 
 .filepath_value {

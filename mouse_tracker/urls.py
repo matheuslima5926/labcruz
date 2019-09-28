@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import CameraIPAnalysis, VideoFileAnalysis, Analysis
+from .tracker import Tracker
 from . import views
 
 urlpatterns = [
@@ -16,6 +17,8 @@ urlpatterns = [
     # Ao escolher Camera IP como fonte do video 
     # essas rotas serão chamadas
     path('renderWA', CameraIPAnalysis.renderWithoutAnalysis, name='renderWA'),
+
+    path('timer', Tracker.triggerTimer, name='timer'),
 
     # Ao escolher Vide File como fonte do vídeo
     # essas rotas serão chamadas
