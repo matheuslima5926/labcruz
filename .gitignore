@@ -6,4 +6,4 @@
 /mouse_tracker/__pycache__
 /migrations
 /newenv
-*.mp4
+.mp4
