@@ -360,7 +360,6 @@ class Tracker(object):
             return jpeg.tobytes()
         
         else:
-            print("roi nao selecionado")
             success, image = self.video.read()
             ret, jpeg = cv2.imencode('.jpg', image)
             return jpeg.tobytes()

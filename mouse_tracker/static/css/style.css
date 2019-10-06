@@ -1,5 +1,5 @@
 h1 {
-    color: pink;
+    color: black;
 }
 
 img {
@@ -16,6 +16,14 @@ canvas {
 form {
     width: 90%;
 }
+
+.header {
+    height: 15vh;
+    display: flex;
+    align-self: center;
+    align-items: center;
+}
+
 .body-content {
     width: 100%;
     display: flex;
@@ -30,7 +38,7 @@ form {
 
 .content {
     display: flex;
-    height: 80vh;
+    height: auto;
 }
 
 .videoframe {
@@ -156,3 +164,12 @@ form {
     background-color: transparent;
 }
 
+
+/* //CONFIGURACOES */
+.animal-form {
+    flex: 1;
+}
+
+.animal-tabela {
+    flex: 1;
+}

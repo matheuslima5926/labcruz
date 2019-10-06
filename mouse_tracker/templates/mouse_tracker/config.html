@@ -1,0 +1,57 @@
+{% extends 'mouse_tracker/base.html' %}
+{% block content %}
+<div class="container">
+    <div class="header" style="height: 15vh">
+        <h1>Registro de Animais</h1>
+    </div>
+    <div class="content">
+        <div class="animal-form">
+            {% if error %}
+            <p style="color: red">Um animal com esse código já está registrado</p>
+            {% endif %}
+            <form action="{% url 'saveAnimal' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Apelido</label>
+                    <input type="text" class="form-control" name="apelido" id="apelido" aria-describedby="apelidoHelp"
+                        placeholder="Apelido">
+                    <small id="apelidoHelp" class="form-text text-muted">Insira o apelido do animal a ser
+                        registrado</small>
+                </div>
+                <div class="form-group">
+                    <label for="codigo">Codigo</label>
+                    <input type="number" class="form-control" name="codigo" id="codigo" placeholder="ex: 0123A">
+                </div>
+                <button type="submit" class="btn btn-success">Salvar</button>
+            </form>
+        </div>
+        <div class="animal-tabela">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Apelido</th>
+                        <th>Codigo</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for animal in animals %}
+                    <tr>
+                        <td>{{animal.nickname}}</td>
+                        <td>{{animal.code_number}}</td>
+                        <td><button class="btn btn-primary">Editar</button></td>
+                        <td>
+                            <form action="{% url 'deleteAnimal' %}" method="POST">{% csrf_token %}
+                                <input type="submit" class="btn btn-danger" name="delete" value="Excluir">
+                                <input type="hidden" name="delete_id" id="delete_id" value="{{animal.code_number}}">
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %} 
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

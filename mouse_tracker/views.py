@@ -1,7 +1,8 @@
 from django.http import HttpResponse, StreamingHttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from django.views import generic, View
+from .models import Animal
 from .tracker import Tracker
 import time
 
@@ -90,8 +91,10 @@ class CameraIPAnalysis(Analysis):
     def renderWithoutAnalysis(request):
         TestSetup.getInstance.roi = None
         TestSetup.getInstance.videoPath = 0
-        # startAnalysis = False
-        context = {}
+        animals = Animal.objects.all()
+        context = {
+            'animals': animals
+        }
         return render(request, 'mouse_tracker/index.html', context)
 
     
@@ -110,7 +113,10 @@ class VideoFileAnalysis(Analysis):
 
     def renderWithoutAnalysis(request):
         TestSetup.getInstance.roi = None
-        context = {}
+        animals = Animal.objects.all()
+        context = {
+            'animals': animals
+        }
         return render(request, 'mouse_tracker/index.html', context)
 
 
@@ -138,5 +144,44 @@ def generateFrames(tracker):
 
 def home(request):
     return render(request, 'mouse_tracker/home.html', {})
+
+class Records(View):
+
+    def getRecord(request):
+        animals = Animal.objects.all()
+        context = {
+            'animals': animals
+        }
+        return render(request, 'mouse_tracker/config.html', context)
+
+    def create_animal(request):
+        apelido = request.POST.get('apelido')
+        codigo = request.POST.get('codigo')
+        error = None
+        animal = Animal.objects.filter(code_number=codigo)
+        if animal:
+            error = "Animal Existente"
+        else:
+            animal = Animal(nickname=apelido, code_number=codigo)
+            animal.save()
+        animals = Animal.objects.all()
+        context = {
+            'animals': animals,
+            'error': error
+        }
+        print("Clicando no delete!")
+        return render(request, 'mouse_tracker/config.html', context)
+
+    def delete_animal(request):
+        codigo = request.POST.get('delete_id')
+        animal = Animal.objects.filter(code_number=codigo)
+        if animal:
+            print("Animal existe!!!!")
+            animal.delete()
+        animals = Animal.objects.all()
+        context = {
+            'animals': animals
+        }
+        return render(request, 'mouse_tracker/config.html', context)
 
 

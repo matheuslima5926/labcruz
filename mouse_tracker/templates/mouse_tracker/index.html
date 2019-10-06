@@ -2,9 +2,9 @@
 {% block content %}
 <div class="container">
   <div class="header">
+    <h1>Teste</h1>
   </div>
   <div class="content">
-
     <div class="videoframe">
         <img id="ratVideo" width="848" height="480" class="videoframe video" src="{% url 'stream_image' %}">
       <canvas id="myCanvas" width="848" height="480">
@@ -23,9 +23,9 @@
         <div class="form-group">
           <label for="exampleFormControlSelect1">Animal</label>
           <select class="form-control" id="exampleFormControlSelect1">
-            <option>Cadena</option>
-            <option>Matheus</option>
-            <option>Ditt</option>
+           {% for animal in animals %}
+           <option value="{{animal.code_number}}">{{animal.code_number}}:{{animal.nickname}}</option>
+           {% endfor %}
           </select>
         </div>
         <input type="submit" id="iniciar" onclick="confirmAreaSelected()" value="Iniciar Teste" class="btn btn-primary">
