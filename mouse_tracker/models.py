@@ -22,6 +22,9 @@ class Animal(models.Model):
     nickname = models.CharField(max_length=100)
     code_number = models.IntegerField(unique=True)
 
+    def find_one():
+        return 
+
 
 class Maze(models.Model):
     nickname = models.CharField(max_length=100)

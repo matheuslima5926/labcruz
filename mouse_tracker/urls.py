@@ -25,9 +25,10 @@ urlpatterns = [
     path('renderVWA', VideoFileAnalysis.renderWithoutAnalysis, name='renderVWA'),
     path('get_filepath', VideoFileAnalysis.get_filepath, name='get_filepath'),
 
-    path('registro', Records.getRecord, name="records"),
+    path('registro', Records.get_animals, name="records"),
     path('saveAnimal', Records.create_animal, name="saveAnimal"),
     path('deleteAnimal', Records.delete_animal, name="deleteAnimal"),
-
+    path('updateAnimal', Records.update_animal, name="updateAnimal"),
+    path('animais', Records.get_animals, name='animais')
     
 ]

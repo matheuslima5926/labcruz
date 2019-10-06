@@ -1,5 +1,5 @@
 from django.http import HttpResponse, StreamingHttpResponse, JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from django.views import generic, View
 from .models import Animal
@@ -147,7 +147,7 @@ def home(request):
 
 class Records(View):
 
-    def getRecord(request):
+    def get_animals(request):
         animals = Animal.objects.all()
         context = {
             'animals': animals
@@ -183,5 +183,19 @@ class Records(View):
             'animals': animals
         }
         return render(request, 'mouse_tracker/config.html', context)
+
+    def update_animal(request):
+        apelido = request.POST.get('nickname')
+        codigo = request.POST.get('code_number')
+        animal = Animal.objects.filter(code_number=codigo).update(
+             nickname=apelido,
+            code_number=codigo
+        )
+        animals = Animal.objects.all()
+        context = {
+            'animals': animals
+        }
+        return redirect('/animais', context)
+        # return render(request, 'mouse_tracker/config.html', context)
 
 

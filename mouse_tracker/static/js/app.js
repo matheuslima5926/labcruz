@@ -126,4 +126,40 @@ function draw() {
   ctx.strokeRect(rect.startX, rect.startY, rect.w, rect.h);
 }
 
+function editClicked(nickname, code_number) {
+    document.getElementById("apelido").value = nickname;
+    var codigo = document.getElementById("codigo");
+    codigo.disabled = true;
+    codigo.value = code_number;
+    document.getElementById('alterar').disabled = false;
+    document.getElementById('salvar').disabled = true;
+}
+
+function alterarAniaml() {
+    var apelido = document.getElementById('apelido').value;
+    var codigo = document.getElementById('codigo').value;
+    $.ajax({
+        type: "POST",
+        url: "/updateAnimal",
+        data: {
+            'nickname': apelido,
+            'code_number': codigo,
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        dataType: 'json',
+        success: function (data) {
+            location.reload(true);
+        }
+    });
+    location.reload(true);
+}
+
+function resetForm() {
+    document.getElementById('apelido').value = "";
+    document.getElementById('codigo').value = "";
+    document.getElementById('alterar').disabled = true;
+    document.getElementById('salvar').disabled = false;
+    console.log("Reseting form!")
+}
+
 init();
