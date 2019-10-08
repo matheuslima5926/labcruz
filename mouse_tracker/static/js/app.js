@@ -135,7 +135,8 @@ function editClicked(nickname, code_number) {
     document.getElementById('salvar').disabled = true;
 }
 
-function alterarAniaml() {
+function alterarAniaml(event) {
+    event.preventDefault();
     var apelido = document.getElementById('apelido').value;
     var codigo = document.getElementById('codigo').value;
     $.ajax({
@@ -152,14 +153,6 @@ function alterarAniaml() {
         }
     });
     location.reload(true);
-}
-
-function resetForm() {
-    document.getElementById('apelido').value = "";
-    document.getElementById('codigo').value = "";
-    document.getElementById('alterar').disabled = true;
-    document.getElementById('salvar').disabled = false;
-    console.log("Reseting form!")
 }
 
 init();
