@@ -1,4 +1,3 @@
-.gitignore
 /.vscode
 /__pycache__
 /labcruz/__pycache__
@@ -6,5 +5,4 @@
 /mouse_tracker/__pycache__
 /migrations
 /newenv
-*.mp4
 *.mov
