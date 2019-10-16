@@ -154,23 +154,35 @@ class Tracker(object):
             # if not contours:
             #     print("Nada sendo detectado!")
             #desenha o retangulo
-
-            print("self.roiInitX {}", self.roiInitX)
-            print("self.RoiEndX {}", self.roiEndX)
+            print("==============================================================")
+            print("self.rangeVerticalInitX {}", self.rangeVerticalInitX)
+            print("self.rangeVerticalEndX {}", self.rangeVerticalEndX)
+            print("self.rangeVerticalInitY {}", self.rangeVerticalInitY)
+            print("self.rangeVerticalEndY {}", self.rangeVerticalEndY)
             
-            print("self.RoiInitY {}", self.roiInitY)
-            print("self.roiEndY {}", self.roiEndY)
+            print("self.rangeHorizontalInitX {}", self.rangeHorizontalInitX)
+            print("self.rangeHorizontalEndX {}", self.rangeHorizontalEndX)
+            print("self.rangeHorizontalInitY {}", self.rangeHorizontalInitY)
+            print("self.rangeHorizontalEndY {}", self.rangeHorizontalEndY)
+
+            print("VERTICAL","X",(int(self.rangeVerticalInitX), int(self.rangeVerticalInitY)),"Y", (int(self.rangeVerticalEndX), int(self.rangeVerticalEndY) + 15))
+            print("HORIZONTAL",(int(self.rangeHorizontalInitX), int(self.rangeHorizontalInitY)), (int(self.rangeHorizontalEndX), int(self.rangeHorizontalEndY) + 15))
+
+
             for c in contours:
-                if cv2.contourArea(c) < 500:
+                if cv2.contourArea(c) < 700:
                     continue
                 M = cv2.moments(c)
                 cX = int(M["m10"] / M["m00"])
                 cY = int(M["m01"] / M["m00"])
                 print("cX {}", cX)
                 print("cY {}", cY)  
-                
-                if (cY >= self.roiInitY and cY <= self.roiEndY and cX >= self.roiInitX and cX <= self.roiEndX):
+                print("==============================================================")
+                if ((cY >= self.rangeVerticalInitY and cY <= self.rangeVerticalEndY and cX >= self.rangeHorizontalInitY and cX <= (self.rangeHorizontalEndY + 15))
+                   or (cX >= self.rangeHorizontalInitX and cX <= self.rangeHorizontalEndX and cY >= self.rangeHorizontalInitY and cY <= self.rangeHorizontalEndY + 15)):
                     cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
+                    (x, y, w, h) = cv2.boundingRect(c)
+                    #cv2.rectangle(image_delimited, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 # if self.isCentro:
                    
                         # if (((cY >= self.rangeHorizontalInitY) and (cY <= self.rangeHorizontalEndY)) and ((cY >= self.rangeVerticalInitY) and (cY <= self.rangeVerticalEndY)) and ((cX >= self.rangeHorizontalInitX) and (cX <= self.rangeHorizontalEndX)) and ((cX >= self.rangeVerticalInitX) and (cX <= self.rangeVerticalEndX))):
@@ -179,7 +191,9 @@ class Tracker(object):
                 # else:
                 #     if (((cY >= self.rangeHorizontalInitY) and (cY <= self.rangeHorizontalEndY)) and ((cY >= self.rangeVerticalInitY) and (cY <= self.rangeVerticalEndY)) and ((cX >= self.rangeHorizontalInitX) and (cX <= self.rangeHorizontalEndX)) and ((cX >= self.rangeVerticalInitX) and (cX <= self.rangeVerticalEndX))):
                 #         cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
-                (x, y, w, h) = cv2.boundingRect(c)
+                else:
+                    print("NÃO")
+                    (x, y, w, h) = cv2.boundingRect(c)
                 if h * w > 7600:
                     continue
                 
@@ -339,7 +353,7 @@ class Tracker(object):
                         self.confirmCentro = 0
                         # print("Esquerda")
                   
-                cv2.rectangle(image_delimited, (x, y), (x + w, y + h), (0, 255, 0), 2)
+              
                 
                 continue
             
