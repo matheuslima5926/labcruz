@@ -178,16 +178,12 @@ class Tracker(object):
                 if self.isCentro:
                     if self.minRangeY <= cY <= self.maxRangeY and self.minRangeX <= cX <= self.maxRangeX:
                         
-                        
-                        
-                        if (((cY >= self.rangeHorizontalInitY) and (cY <= self.rangeHorizontalEndY)) and ((cX >= self.rangeHorizontalInitX) and (cX <= self.rangeHorizontalEndX))):
+                        if (((cY >= self.rangeHorizontalInitY) and (cY <= self.rangeHorizontalEndY)) and ((cY >= self.rangeVerticalInitY) and (cY <= self.rangeVerticalEndY)) and ((cX >= self.rangeHorizontalInitX) and (cX <= self.rangeHorizontalEndX)) and ((cX >= self.rangeVerticalInitX) and (cX <= self.rangeVerticalEndX))):
                             cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
                         # cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
                 else:
-                    if (((cY >= self.rangeHorizontalInitY) and (cY <= self.rangeVerticalEndY)) and ((cX >= self.rangeHorizontalInitX) and (cX <= self.rangeVerticalEndX))):
+                    if (((cY >= self.rangeHorizontalInitY) and (cY <= self.rangeHorizontalEndY)) and ((cY >= self.rangeVerticalInitY) and (cY <= self.rangeVerticalEndY)) and ((cX >= self.rangeHorizontalInitX) and (cX <= self.rangeHorizontalEndX)) and ((cX >= self.rangeVerticalInitX) and (cX <= self.rangeVerticalEndX))):
                         cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
-                    # cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
-                # print("Center %s" % (str(M)))
                 (x, y, w, h) = cv2.boundingRect(c)
                 if h * w > 7600:
                     continue
