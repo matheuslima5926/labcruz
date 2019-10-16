@@ -162,9 +162,13 @@ class Tracker(object):
                 cY = int(M["m01"] / M["m00"])
                 if self.isCentro:
                     if self.minRangeY <= cY <= self.maxRangeY and self.minRangeX <= cX <= self.maxRangeX:
-                        cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
+                        if (((cY >= self.rangeHorizontalInitY) and (cY <= self.rangeVerticalEndY)) and ((cX >= self.rangeHorizontalInitX) and (cX <= self.rangeVerticalEndX))):
+                            cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
+                        # cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
                 else:
-                    cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
+                    if (((cY >= self.rangeHorizontalInitY) and (cY <= self.rangeVerticalEndY)) and ((cX >= self.rangeHorizontalInitX) and (cX <= self.rangeVerticalEndX))):
+                        cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
+                    # cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
                 # print("Center %s" % (str(M)))
                 (x, y, w, h) = cv2.boundingRect(c)
                 if h * w > 7600:
