@@ -154,19 +154,12 @@ class Tracker(object):
             # if not contours:
             #     print("Nada sendo detectado!")
             #desenha o retangulo
+
+            print("self.roiInitX {}", self.roiInitX)
+            print("self.RoiEndX {}", self.roiEndX)
             
-            print("self.rangeHorizontalInitY {}", self.rangeHorizontalInitY)
-            print("self.rangeHorizontalEndY {}", self.rangeHorizontalEndY)
-                        
-            print("self.rangeVerticalInitY {}", self.rangeVerticalInitY)
-            print("self.rangeVerticalEndY {}", self.rangeVerticalEndY)
-                        
-            print("self.rangeHorizontalInitX {}", self.rangeHorizontalInitX)
-            print("self.rangeHorizontalEndX {}", self.rangeHorizontalEndX)
-                        
-            print("self.rangeVerticalInitX {}", self.rangeVerticalInitX)
-            print("self.rangeVerticalEndX {}", self.rangeVerticalEndX)
-            
+            print("self.RoiInitY {}", self.roiInitY)
+            print("self.roiEndY {}", self.roiEndY)
             for c in contours:
                 if cv2.contourArea(c) < 500:
                     continue
@@ -175,15 +168,17 @@ class Tracker(object):
                 cY = int(M["m01"] / M["m00"])
                 print("cX {}", cX)
                 print("cY {}", cY)  
-                if self.isCentro:
-                    if self.minRangeY <= cY <= self.maxRangeY and self.minRangeX <= cX <= self.maxRangeX:
-                        
-                        if (((cY >= self.rangeHorizontalInitY) and (cY <= self.rangeHorizontalEndY)) and ((cY >= self.rangeVerticalInitY) and (cY <= self.rangeVerticalEndY)) and ((cX >= self.rangeHorizontalInitX) and (cX <= self.rangeHorizontalEndX)) and ((cX >= self.rangeVerticalInitX) and (cX <= self.rangeVerticalEndX))):
-                            cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
+                
+                if (cY >= self.roiInitY and cY <= self.roiEndY and cX >= self.roiInitX and cX <= self.roiEndX):
+                    cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
+                # if self.isCentro:
+                   
+                        # if (((cY >= self.rangeHorizontalInitY) and (cY <= self.rangeHorizontalEndY)) and ((cY >= self.rangeVerticalInitY) and (cY <= self.rangeVerticalEndY)) and ((cX >= self.rangeHorizontalInitX) and (cX <= self.rangeHorizontalEndX)) and ((cX >= self.rangeVerticalInitX) and (cX <= self.rangeVerticalEndX))):
+                            
                         # cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
-                else:
-                    if (((cY >= self.rangeHorizontalInitY) and (cY <= self.rangeHorizontalEndY)) and ((cY >= self.rangeVerticalInitY) and (cY <= self.rangeVerticalEndY)) and ((cX >= self.rangeHorizontalInitX) and (cX <= self.rangeHorizontalEndX)) and ((cX >= self.rangeVerticalInitX) and (cX <= self.rangeVerticalEndX))):
-                        cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
+                # else:
+                #     if (((cY >= self.rangeHorizontalInitY) and (cY <= self.rangeHorizontalEndY)) and ((cY >= self.rangeVerticalInitY) and (cY <= self.rangeVerticalEndY)) and ((cX >= self.rangeHorizontalInitX) and (cX <= self.rangeHorizontalEndX)) and ((cX >= self.rangeVerticalInitX) and (cX <= self.rangeVerticalEndX))):
+                #         cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
                 (x, y, w, h) = cv2.boundingRect(c)
                 if h * w > 7600:
                     continue
