@@ -8,10 +8,14 @@ function cancelAreaSelected() {
 }
 
 function confirmAreaSelected() {
+    console.log("Confirming selected area !!!!")
     var initX = rect.startX
     var initY = rect.startY
     var areaWidth = rect.w
     var areaHeight = rect.h
+    var animal = $('#dropdown_animal').val()
+    alert(animal);
+    console.log(animal);
     $.ajax({
         type: "POST",
         url: "/getROI",
@@ -20,6 +24,7 @@ function confirmAreaSelected() {
             'initY': initY,
             'areaWidth': areaWidth,
             'areaHeight': areaHeight,
+            'animal_value': animal,
             csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
         },
         dataType: 'json',
@@ -149,9 +154,10 @@ function alterarAniaml(event) {
         },
         dataType: 'json',
         success: function (data) {
-            location.reload(true);
+            
         }
     });
+    console.log("Reload data!!!");
     location.reload(true);
 }
 

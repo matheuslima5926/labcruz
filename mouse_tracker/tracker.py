@@ -2,6 +2,7 @@ from django.http import HttpResponse, StreamingHttpResponse, JsonResponse
 from django.shortcuts import render
 from django.template import loader
 from django.views import generic
+from .models import Test
 import numpy as np
 import threading
 import time
@@ -27,7 +28,6 @@ class Tracker(object):
     rangeHorizontalInitY = 0
     rangeHorizontalEndX = 0
     rangeHorizontalEndY = 0
-
     minRangeY = 0
     maxRangeY = 0
     minRangeX = 0
@@ -350,9 +350,9 @@ class Tracker(object):
             cv2.putText(frame,'Timer Direita: ' +  str(round(self.tempoTotalDireita,2)), (35, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
             cv2.putText(frame,'Timer Baixo: ' +  str(round(self.tempoTotalBaixo,2)), (35, 95), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
             cv2.putText(frame,'Timer Esquerda: ' +  str(round(self.tempoTotalEsquerda,2)), (35, 115), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
-            cv2.putText(frame,'Total Cruzamentos: ' +  str(round(self.totalCruzamentos,2)), (35, 135), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
-            cv2.putText(frame,'Total Bracos Abertos: ' +  str(round(self.totalBracosAbertos,2)), (35, 155), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
-            cv2.putText(frame,'Total Bracos Fechados: ' +  str(round(self.totalBracosFechados,2)), (35, 175), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
+            # cv2.putText(frame,'Total Cruzamentos: ' +  str(round(self.totalCruzamentos,2)), (35, 135), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
+            # cv2.putText(frame,'Total Bracos Abertos: ' +  str(round(self.totalBracosAbertos,2)), (35, 155), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
+            # cv2.putText(frame,'Total Bracos Fechados: ' +  str(round(self.totalBracosFechados,2)), (35, 175), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
             # cv2.rectangle(frame, (self.roi[0], self.roi[1]), (self.roi[0] + self.roi[2], self.roi[1] + self.roi[3]), (200, 0, 0), 2)
             cv2.rectangle(frame, (int(self.rangeVerticalInitX), int(self.rangeVerticalInitY)), (int(self.rangeVerticalEndX), int(self.rangeVerticalEndY) + 15), (200, 0, 0), 2)
             cv2.rectangle(frame, (int(self.rangeHorizontalInitX), int(self.rangeHorizontalInitY)), (int(self.rangeHorizontalEndX), int(self.rangeHorizontalEndY) + 15), (200, 0, 0), 2)
@@ -374,6 +374,9 @@ class Tracker(object):
         return
         # return JsonResponse({'direction': str(location)})
 
+
+    def create_test(request):
+        teste = Teste()
 # tempo no centro
 # numero sde cruzamento no centro
 # porcentagem de permanencia em cada braço

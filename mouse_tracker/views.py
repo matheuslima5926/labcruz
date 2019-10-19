@@ -50,12 +50,15 @@ class Analysis(View):
         mazeSelectedArea.initY = request.POST.get('initY')
         mazeSelectedArea.areaW = request.POST.get('areaWidth')
         mazeSelectedArea.areaH = request.POST.get('areaHeight')
+        animal_value = request.POST.get('animal')
         roi_array = []
         roi_array.append(int(mazeSelectedArea.initX))
         roi_array.append(int(mazeSelectedArea.initY))
         roi_array.append(int(mazeSelectedArea.areaW))
         roi_array.append(int(mazeSelectedArea.areaH))
         TestSetup.getInstance.roi = roi_array
+        TestSetup.getInstance.animal = animal_value
+        print("Animal: %s" % (TestSetup.getInstance.animal))
         print("TestSetup videoPath %s" % (TestSetup.getInstance.videoPath))
         print("TestSetup roi %s" % (TestSetup.getInstance.roi))
 
@@ -81,6 +84,7 @@ class Analysis(View):
             pass
 
     def startTest(request):
+        print("To no StartTest!!!")
         print(TestSetup.getInstance.roi)
         return render(request, 'mouse_tracker/index.html', {})
 
@@ -103,13 +107,18 @@ class VideoFileAnalysis(Analysis):
 
     def get_filepath(request):
         print("Chamando get_filepath")
+        animals = Animal.objects.all()
+        context = {
+                'animals': animals
+        }
         if request.method == "POST":
             print("Entrou no metodo POST")
             print(str(request.POST.get('filepath_value')))
             TestSetup.getInstance.videoPath = str(request.POST.get('filepath_value'))
             TestSetup.getInstance.roi = 0
-            return render(request, 'mouse_tracker/index.html', {})
-        return JsonResponse({})
+            return render(request, 'mouse_tracker/index.html', context)
+        return render(request, 'mouse_tracker/index.html', context)
+        # return JsonResponse({})
 
     def renderWithoutAnalysis(request):
         TestSetup.getInstance.roi = None
@@ -117,6 +126,7 @@ class VideoFileAnalysis(Analysis):
         context = {
             'animals': animals
         }
+        print("Render without analysis!!!")
         return render(request, 'mouse_tracker/index.html', context)
 
 
@@ -143,7 +153,11 @@ def generateFrames(tracker):
         return
 
 def home(request):
-    return render(request, 'mouse_tracker/home.html', {})
+    animals = Animal.objects.all()
+    context = {
+        'animals': animals
+    }
+    return render(request, 'mouse_tracker/home.html', context)
 
 class Records(View):
 

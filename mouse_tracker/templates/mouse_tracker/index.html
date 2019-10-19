@@ -12,19 +12,19 @@
     <div class="form">
       <form action="{% url 'start_test' %}" method="POST">
         {% csrf_token %}
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="exampleInputPassword1">Distância (cm)</label>
           <input type="text" class="form-control" id="exampleInputDistancia" placeholder="0.0">
         </div>
         <div class="form-group">
           <label for="exampleInputVelocidade">Velocidade (cm/s)</label>
           <input type="text" class="form-control" id="exampleInputVelocidade" placeholder="0.0">
-        </div>
+        </div> -->
         <div class="form-group">
           <label for="exampleFormControlSelect1">Animal</label>
           <select class="form-control" id="exampleFormControlSelect1">
            {% for animal in animals %}
-           <option value="{{animal.code_number}}">{{animal.code_number}}:{{animal.nickname}}</option>
+           <option id='dropdown_animal' value="{{animal.code_number}}">{{animal.code_number}}:{{animal.nickname}}</option>
            {% endfor %}
           </select>
         </div>
