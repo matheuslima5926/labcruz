@@ -29,6 +29,7 @@ urlpatterns = [
     path('saveAnimal', Records.create_animal, name="saveAnimal"),
     path('deleteAnimal', Records.delete_animal, name="deleteAnimal"),
     path('updateAnimal', Records.update_animal, name="updateAnimal"),
-    path('animais', Records.get_animals, name='animais')
+    path('animais', Records.get_animals, name='animais'),
+    path('historico', Records.get_tests, name='historico')
     
 ]

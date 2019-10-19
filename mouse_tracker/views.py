@@ -2,7 +2,7 @@ from django.http import HttpResponse, StreamingHttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from django.views import generic, View
-from .models import Animal
+from .models import Animal, Test
 from .tracker import Tracker
 import time
 
@@ -50,7 +50,7 @@ class Analysis(View):
         mazeSelectedArea.initY = request.POST.get('initY')
         mazeSelectedArea.areaW = request.POST.get('areaWidth')
         mazeSelectedArea.areaH = request.POST.get('areaHeight')
-        animal_value = request.POST.get('animal')
+        animal_value = request.POST.get('animal_value')
         roi_array = []
         roi_array.append(int(mazeSelectedArea.initX))
         roi_array.append(int(mazeSelectedArea.initY))
@@ -76,10 +76,10 @@ class Analysis(View):
                     return StreamingHttpResponse(getFirstFrame(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi)), content_type="multipart/x-mixed-replace;boundary=frame")
                 else:
                     print("Roi nao é nulo")
-                    return StreamingHttpResponse(generateFrames(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi)),content_type="multipart/x-mixed-replace;boundary=frame")
+                    return StreamingHttpResponse(generateFrames(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi, TestSetup.getInstance.animal)),content_type="multipart/x-mixed-replace;boundary=frame")
             else:
                 print("Rendering image from Camera IP")
-                return StreamingHttpResponse(generateFrames(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi)),content_type="multipart/x-mixed-replace;boundary=frame")
+                return StreamingHttpResponse(generateFrames(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi, TestSetup.getInstance.animal)),content_type="multipart/x-mixed-replace;boundary=frame")
         except:
             pass
 
@@ -149,6 +149,7 @@ def generateFrames(tracker):
             time.sleep(0.010)
             yield(b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + 
             b'\r\n\r\n')
+        print("Teste pode ser criado!!!")
     except:
         return
 
@@ -212,4 +213,11 @@ class Records(View):
         return redirect('/animais', context)
         # return render(request, 'mouse_tracker/config.html', context)
 
+    def get_tests(request):
+        tests = Test.objects.all()
+        print(tests)
+        context = {
+            'tests': tests
+        }
+        return render(request, 'mouse_tracker/historico.html', context)
 

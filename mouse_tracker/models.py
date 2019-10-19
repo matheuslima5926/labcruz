@@ -56,10 +56,15 @@ class Test(models.Model):
     timein_close_left = models.FloatField(default=0.0)
     timein_open_right = models.FloatField(default=0.0)
     timein_open_left = models.FloatField(default=0.0)
+    timein_open = models.FloatField(default=0.0)
+    timein_close = models.FloatField(default=0.0)
+    timein_center = models.FloatField(default=0.0)
+    cruzamentos = models.IntegerField(default=0)
     time_moving = models.FloatField(default=0.0)
     time_idle = models.FloatField(default=0.0)
     max_speed = models.FloatField(default=0.0)
     min_speed = models.FloatField(default=0.0)
+
 
     def __str__(self):
         return "Performed at: {}".format(self.datetime_start)
