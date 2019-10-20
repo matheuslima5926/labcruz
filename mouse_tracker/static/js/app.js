@@ -7,6 +7,14 @@ function cancelAreaSelected() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
+var currentAnimal = 0
+
+$('#dropdown_animal').change(function() {
+    alert($('#dropdown_animal').val());
+}) 
+
+
+
 function confirmAreaSelected() {
     console.log("Confirming selected area !!!!")
     var initX = rect.startX
@@ -14,7 +22,7 @@ function confirmAreaSelected() {
     var areaWidth = rect.w
     var areaHeight = rect.h
     var animal = $('#dropdown_animal').val()
-    // alert(animal);
+    alert(animal);
     console.log(animal);
     $.ajax({
         type: "POST",

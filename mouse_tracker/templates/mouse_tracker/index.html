@@ -22,9 +22,9 @@
         </div> -->
         <div class="form-group">
           <label for="exampleFormControlSelect1">Animal</label>
-          <select class="form-control" id="exampleFormControlSelect1">
+          <select class="form-control" id="dropdown_animal">
            {% for animal in animals %}
-           <option id='dropdown_animal' value="{{animal.code_number}}">{{animal.code_number}}:{{animal.nickname}}</option>
+           <option id='option_animal' value="{{animal.code_number}}">{{animal.code_number}}:{{animal.nickname}}</option>
            {% endfor %}
           </select>
         </div>

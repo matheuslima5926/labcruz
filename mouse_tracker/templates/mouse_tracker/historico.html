@@ -14,6 +14,7 @@
                     <th>Cod Animal</th>
                     <th>T Aberto</th>
                     <th>T Fechado</th>
+                    <th>T Centro</th>
                     <th>Nº Cruzamentos</th>
                     <th>Exportar</th>
                 </tr>
@@ -26,6 +27,7 @@
                     <td>{{teste.animal.code_number}}</td>
                     <td>{{teste.timein_open|floatformat:'2'}}</td>
                     <td>{{teste.timein_close|floatformat:'2'}}</td>
+                    <td>{{teste.timein_center|floatformat:'2'}}</td>
                     <td>{{teste.timein_center|floatformat:'2'}}</td>
                     <td>
                         <button class="btn btn-primary" onclick="{{teste}}">Exportar</button>
