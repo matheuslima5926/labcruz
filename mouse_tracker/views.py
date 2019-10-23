@@ -4,6 +4,7 @@ from django.template import loader
 from django.views import generic, View
 from .models import Animal, Test
 from .tracker import Tracker
+import xlsxwriter
 import time
 
 class TestSetup:
@@ -224,15 +225,61 @@ class Records(View):
 
     def exportar_linha(request):
         test_id = request.POST.get('test_id')
-        print(test_id)
         teste = Test.objects.get(id=test_id)
+        workbook = xlsxwriter.Workbook('{}{}.xlsx'.format(test_id, teste.animal.nickname))
+        worksheet = workbook.add_worksheet()
 
-        print(teste)
-        print(teste.animal.nickname)
-        print(teste.timein_close)
+        row = 0
+        col = 0
+        i = 0
+
+        properties = ['Teste ID', 'Apelido Animal', 'Cod Animal', 'T Aberto', 'T Fechado', 'T Centro', 'Cruzamentos']
+
+        
+        for i in range(0,6):
+            worksheet.write(row, i, properties[i])
+        row = 1
+        worksheet.write(row, 0, teste.id)
+        worksheet.write(row, 1, teste.animal.nickname)
+        worksheet.write(row, 2, teste.animal.code_number)
+        worksheet.write(row, 3, teste.timein_open)
+        worksheet.write(row, 4, teste.timein_close)
+        worksheet.write(row, 5, teste.timein_center)
+        worksheet.write(row, 6, teste.cruzamentos)
+
+        workbook.close()
         tests = Test.objects.all()
         context = {
             'tests': tests
         }
         return render(request, 'mouse_tracker/historico.html', context)
 
+    def exportar_todos(request):
+        workbook = xlsxwriter.Workbook('historico.xlsx')
+        worksheet = workbook.add_worksheet()
+
+        row = 0
+        col = 0
+        i = 0
+
+        properties = ['Teste ID', 'Apelido Animal', 'Cod Animal', 'T Aberto', 'T Fechado', 'T Centro', 'Cruzamentos']
+        testes = Test.objects.all()
+        for i in range(0,6):
+            worksheet.write(row, i, properties[i])
+        row = 1
+        for t in testes:
+            worksheet.write(row, 0, t.id)
+            worksheet.write(row, 1, t.animal.nickname)
+            worksheet.write(row, 2, t.animal.code_number)
+            worksheet.write(row, 3, t.timein_open)
+            worksheet.write(row, 4, t.timein_close)
+            worksheet.write(row, 5, t.timein_center)
+            worksheet.write(row, 6, t.cruzamentos)
+            row += 1
+            
+        workbook.close()
+        tests = Test.objects.all()
+        context = {
+            'tests': tests
+        }
+        return render(request, 'mouse_tracker/historico.html', context)

@@ -31,6 +31,8 @@ urlpatterns = [
     path('updateAnimal', Records.update_animal, name="updateAnimal"),
     path('animais', Records.get_animals, name='animais'),
     path('historico', Records.get_tests, name='historico'),
-    path('exportar', Records.exportar_linha, name='exportar')
+    path('exportar', Records.exportar_linha, name='exportar'),
+    path('exportar_todos', Records.exportar_todos, name='exportar_todos'),
+
     
 ]

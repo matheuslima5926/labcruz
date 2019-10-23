@@ -67,8 +67,8 @@ class Test(models.Model):
     min_speed = models.FloatField(default=0.0)
 
 
-    def __str__(self):
-        return "Performed at: {}".format(self.datetime_start)
+    # def __str__(self):
+    #     return "Performed at: {}".format(self.datetime_start)
 
     def was_performed_recently(self):
         return self.datetime_end >= timezone.now() - datetime.timedelta(days=1)

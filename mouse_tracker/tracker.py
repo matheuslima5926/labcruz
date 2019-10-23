@@ -389,7 +389,6 @@ class Tracker(object):
                 timein_center = self.tempoTotalCentro
                 teste = Test.objects.create(animal=animal[0], timein_open=timein_open, timein_close=timein_close, timein_center=timein_center)
                 print("Foi!")
-                breakpoint()
                 print(teste)
                 
                 # teste.timein_open = self.tempoTotalCima + self.tempoTotalBaixo
@@ -417,7 +416,6 @@ class Tracker(object):
 
     def create_test():
         animal = Animal.objects.filter(code_number=self.animal_code)
-        breakpoint()
         timein_open = self.tempoTotalCima + self.tempoTotalBaixo
         timein_close = self.tempoTotalDireita + self.tempoTotalEsquerda
         teste = Test.objects.create(animal=animal, timein_open=timein_open, timein_close=timein_close)

@@ -46,6 +46,10 @@
                 {% endfor %} 
             </tbody>
         </table>
+        <form action="{% url 'exportar_todos' %}" method="GET">
+            {% csrf_token %}
+            <button class="btn btn-success">Exportar Todos</button>
+        </form>
     </div>
 
 </div>
