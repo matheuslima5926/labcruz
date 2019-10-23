@@ -377,11 +377,11 @@ class Tracker(object):
                     self.tempoTotalCima +=  (int(self.video.get(cv2.CAP_PROP_POS_FRAMES)) - self.timerCima) / self.video.get(cv2.CAP_PROP_FPS)
         
             # PRINTAR OS VALORES NA TELA    
-            cv2.putText(frame,'Timer Centro: ' +  str(round(self.tempoTotalCentro,2)), (35, 35), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
-            cv2.putText(frame,'Timer Cima: ' +  str(round(self.tempoTotalCima,2)), (35, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
-            cv2.putText(frame,'Timer Direita: ' +  str(round(self.tempoTotalDireita,2)), (35, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
-            cv2.putText(frame,'Timer Baixo: ' +  str(round(self.tempoTotalBaixo,2)), (35, 95), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
-            cv2.putText(frame,'Timer Esquerda: ' +  str(round(self.tempoTotalEsquerda,2)), (35, 115), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
+            cv2.putText(frame,'Timer Centro: ' +  str(round(self.tempoTotalCentro,2)), (35, 35), cv2.FONT_HERSHEY_SIMPLEX, 1.1 , (255,0,0))
+            cv2.putText(frame,'Timer Cima: ' +  str(round(self.tempoTotalCima,2)), (35, 65), cv2.FONT_HERSHEY_SIMPLEX, 1.1 , (255,0,0))
+            cv2.putText(frame,'Timer Direita: ' +  str(round(self.tempoTotalDireita,2)), (35, 95), cv2.FONT_HERSHEY_SIMPLEX, 1.1 , (255,0,0))
+            cv2.putText(frame,'Timer Baixo: ' +  str(round(self.tempoTotalBaixo,2)), (35, 125), cv2.FONT_HERSHEY_SIMPLEX, 1.1 , (255,0,0))
+            cv2.putText(frame,'Timer Esquerda: ' +  str(round(self.tempoTotalEsquerda,2)), (35, 155), cv2.FONT_HERSHEY_SIMPLEX, 1.1 , (255,0,0))
             # cv2.putText(frame,'Total Cruzamentos: ' +  str(round(self.totalCruzamentos,2)), (35, 135), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
             # cv2.putText(frame,'Total Bracos Abertos: ' +  str(round(self.totalBracosAbertos,2)), (35, 155), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
             # cv2.putText(frame,'Total Bracos Fechados: ' +  str(round(self.totalBracosFechados,2)), (35, 175), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))

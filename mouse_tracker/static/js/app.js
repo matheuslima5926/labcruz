@@ -7,11 +7,11 @@ function cancelAreaSelected() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
-var currentAnimal = 0
+// var currentAnimal = 0
 
-$('#dropdown_animal').change(function() {
-    alert($('#dropdown_animal').val());
-}) 
+// $('#dropdown_animal').change(function() {
+//     alert($('#dropdown_animal').val());
+// }) 
 
 
 

@@ -30,7 +30,11 @@
                     <td>{{teste.timein_center|floatformat:'2'}}</td>
                     <td>{{teste.timein_center|floatformat:'2'}}</td>
                     <td>
-                        <button class="btn btn-primary" onclick="{{teste}}">Exportar</button>
+                        <form action="{% url 'exportar' %}" method="POST">
+                            {% csrf_token %}
+                            <!-- <input type="hidden" value="{{teste.id}}" name="test_id"> -->
+                            <button class="btn btn-primary" name="test_id" value="{{teste.id}}">Exportar</button>
+                        </form>
                     </td>
                     <!-- <td>
                         <form action="{% url 'deleteAnimal' %}" method="POST">{% csrf_token %}

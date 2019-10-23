@@ -79,7 +79,7 @@ class Analysis(View):
                     return StreamingHttpResponse(generateFrames(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi, TestSetup.getInstance.animal)),content_type="multipart/x-mixed-replace;boundary=frame")
             else:
                 print("Rendering image from Camera IP")
-                return StreamingHttpResponse(generateFrames(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi, TestSetup.getInstance.animal)),content_type="multipart/x-mixed-replace;boundary=frame")
+                return StreamingHttpResponse(generateFrames(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi)),content_type="multipart/x-mixed-replace;boundary=frame")
         except:
             pass
 
@@ -150,8 +150,9 @@ def generateFrames(tracker):
             yield(b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + 
             b'\r\n\r\n')
         print("Teste pode ser criado!!!")
-    except:
-        return
+    except Exception as e: 
+        print(e)
+ 
 
 def home(request):
     animals = Animal.objects.all()
@@ -216,6 +217,20 @@ class Records(View):
     def get_tests(request):
         tests = Test.objects.all()
         print(tests)
+        context = {
+            'tests': tests
+        }
+        return render(request, 'mouse_tracker/historico.html', context)
+
+    def exportar_linha(request):
+        test_id = request.POST.get('test_id')
+        print(test_id)
+        teste = Test.objects.get(id=test_id)
+
+        print(teste)
+        print(teste.animal.nickname)
+        print(teste.timein_close)
+        tests = Test.objects.all()
         context = {
             'tests': tests
         }

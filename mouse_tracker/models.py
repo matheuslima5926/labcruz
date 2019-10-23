@@ -44,6 +44,7 @@ class MazeAreaSelection(models.Model):
 
 
 class Test(models.Model):
+    #mudar para on_delete=models.CASCADE
     animal = models.ForeignKey(Animal, on_delete=models.PROTECT)
     maze = models.ForeignKey(Maze, null=True, on_delete=models.SET_NULL)
     datetime_start = models.DateTimeField(auto_now=True)
