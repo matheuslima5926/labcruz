@@ -2,6 +2,8 @@ from django.http import HttpResponse, StreamingHttpResponse, JsonResponse
 from django.shortcuts import render
 from django.template import loader
 from django.views import generic
+from .models import Test, Animal
+import datetime
 import numpy as np
 import threading
 import time
@@ -15,6 +17,18 @@ class Tracker(object):
     backSub = cv2.createBackgroundSubtractorKNN()
     centerX = 0
     centerY = 0
+    roiInitX = 0
+    roiInitY = 0
+    roiEndX = 0
+    roiEndY = 0
+    rangeVerticalInitX = 0
+    rangeVerticalInitY = 0
+    rangeVerticalEndX = 0
+    rangeVerticalEndY = 0
+    rangeHorizontalInitX = 0
+    rangeHorizontalInitY = 0
+    rangeHorizontalEndX = 0
+    rangeHorizontalEndY = 0
     minRangeY = 0
     maxRangeY = 0
     minRangeX = 0
@@ -39,7 +53,9 @@ class Tracker(object):
     totalBracosFechados = 0
     totalCruzamentos = 0
     timerStartado = 0
-    def __init__(self, videoPath=None, roi=None):
+    animal_code = 0
+    animal = None
+    def __init__(self, videoPath=None, roi=None, animal_code=0):
         self.video = cv2.VideoCapture(videoPath)
         fps = self.video.get(cv2.CAP_PROP_FPS)      # OpenCV2 version 2 used "CV_CAP_PROP_FPS"
         frame_count = int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -55,25 +71,63 @@ class Tracker(object):
         if roi:
             print("Atribuindo ROI!")
             self.roi = roi
-            self.centerX = self.roi[2] / 2
-            self.centerY = self.roi[3] / 2
-            self.minRangeX = self.centerX - ( self.centerX * 7.5 ) / 100 
-            self.maxRangeX = self.centerX + ( self.centerX * 7.5 ) / 100 
-            self.minRangeY = self.centerY - ( self.centerY * 7.5 ) / 100 
-            self.maxRangeY = self.centerY + ( self.centerY * 7.5 ) / 100 
+            self.roiInitX = int(self.roi[0])
+            self.roiInitY = int(self.roi[1])
+            self.roiEndX = int(self.roi[2])
+            self.roiEndY = int(self.roi[3])
+            self.centerX = self.roiEndX / 2
+            self.centerY = int(self.roi[3]) / 2
+            self.minRangeX = int(self.centerX) - ( int(self.roi[2]) * 7.5 ) / 100 
+            self.maxRangeX = int(self.centerX) + ( int(self.centerX) * 7.5 ) / 100 
+            self.minRangeY = int(self.centerY) - ( int(self.centerY) * 7.5 ) / 100 
+            self.maxRangeY = int(self.centerY) + ( int(self.centerY) * 7.5 ) / 100 
 
+            self.rangeVerticalInitX = self.roiInitX + self.centerX - self.centerX * 9 / 100
+            self.rangeVerticalEndX = int(self.roiInitX) + int(self.centerX) + int(self.centerX) * 9 / 100
 
-            print("Largura: {}".format(self.roi[2]))
-            print("Altura: {}".format(self.roi[3]))
+            self.rangeVerticalInitY = int(self.roi[1])
+            self.rangeVerticalEndY = int(self.roi[3])
+
+            self.rangeHorizontalInitX = self.roiInitX
+            self.rangeHorizontalInitY = int(self.roiInitY) + int(self.centerY) - int(self.centerY) * 11 / 100
+
+            self.rangeHorizontalEndX = self.roiInitX + self.roiEndX
+            self.rangeHorizontalEndY = int(self.roiInitY) + int(self.centerY) + int(self.centerY) * 11 / 100
+
+            self.animal_code = animal_code
+            print(self.animal_code)
+            print("Meio da ROI: %s" % (self.rangeVerticalInitX))
+
+            print("Inicio ROI X:{}".format(self.roiInitX))
+            print("Inicio ROI Y:{}".format(self.roiInitY))
+            print("Fim ROI X:{}".format(self.roiEndX))
+            print("Fim ROI Y:{}".format(self.roiEndY))
+
+            print("Centro X:{}".format(self.centerX))
             print("Centro Y:{}".format(self.centerY))
-            print("Centro X:{}".format(self.centerX))
-            print("Inicio Faixa Y:{}".format(self.minRangeY))
-            print("Fim Faixa Y:{}".format(self.maxRangeY))
-            print("Inicio Faixa X:{}".format(self.minRangeX))
-            print("Fim Faixa X:{}".format(self.maxRangeX))
-            print("Centro X:{}".format(self.centerX))
-            print("Altura %s" % (self.roi[3]))
-            print("Width %s" % (self.roi[2]))
+
+
+            print("Faixa Vertical Inicio X: %s" % (int(self.roiInitX) + int(self.centerX) - int(self.centerX) * 7.5 / 100))
+            print("Faixa Vertical Fim X: %s" % (int(self.roiInitX) + int(self.centerX) + int(self.centerX) * 7.5 / 100))
+            print("Faixa Vertical Inicio Y: %s" % (int(self.roi[1])))
+            print("Faixa Vertical Fim Y: %s" % (int(self.roi[3])))
+
+            # self.rangeVerticalInitX = int(self.centerX) - int(self.centerX) * 7.5 / 100
+            
+
+            # print("Largura: {}".format(self.roi[2]))
+            # print("Altura: {}".format(self.roi[3]))
+            # print("Centro Y:{}".format(self.centerY))
+            # print("Centro X:{}".format(self.centerX))
+
+
+            # print("Inicio Faixa Y:{}".format(self.minRangeY))
+            # print("Fim Faixa Y:{}".format(self.maxRangeY))
+            # print("Inicio Faixa X:{}".format(self.minRangeX))
+            # print("Fim Faixa X:{}".format(self.maxRangeX))
+            # print("Centro X:{}".format(self.centerX))
+            # print("Altura %s" % (self.roi[3]))
+            # print("Width %s" % (self.roi[2]))
 
     def __del__(self):
         self.video.release()
@@ -101,22 +155,39 @@ class Tracker(object):
             thresh = cv2.dilate(thresh, None, iterations=2)
             # thresh = cv2.erode(thresh, None, iterations=2)
             contours, hierarchy = cv2.findContours(thresh.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+
             # if not contours:
             #     print("Nada sendo detectado!")
             #desenha o retangulo
+            # print("==============================================================")
+            # print("self.rangeVerticalInitX {}", self.rangeVerticalInitX)
+            # print("self.rangeVerticalEndX {}", self.rangeVerticalEndX)
+            # print("self.rangeVerticalInitY {}", self.rangeVerticalInitY)
+            # print("self.rangeVerticalEndY {}", self.rangeVerticalEndY)
+            
+            # print("self.rangeHorizontalInitX {}", self.rangeHorizontalInitX)
+            # print("self.rangeHorizontalEndX {}", self.rangeHorizontalEndX)
+            # print("self.rangeHorizontalInitY {}", self.rangeHorizontalInitY)
+            # print("self.rangeHorizontalEndY {}", self.rangeHorizontalEndY)
+
+            # print("VERTICAL","X",(int(self.rangeVerticalInitX), int(self.rangeVerticalInitY)),"Y", (int(self.rangeVerticalEndX), int(self.rangeVerticalEndY) + 15))
+            # print("HORIZONTAL",(int(self.rangeHorizontalInitX), int(self.rangeHorizontalInitY)), (int(self.rangeHorizontalEndX), int(self.rangeHorizontalEndY) + 15))
+
             for c in contours:
-                if cv2.contourArea(c) < 500:
+                if cv2.contourArea(c) < 700:
                     continue
                 M = cv2.moments(c)
                 cX = int(M["m10"] / M["m00"])
                 cY = int(M["m01"] / M["m00"])
-                if self.isCentro:
-                    if self.minRangeY <= cY <= self.maxRangeY and self.minRangeX <= cX <= self.maxRangeX:
-                        cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
-                else:
+
+                if ((cY >= self.rangeVerticalInitY and cY <= self.rangeVerticalEndY and cX >= self.rangeHorizontalInitY and cX <= (self.rangeHorizontalEndY + 15))
+                   or (cX >= self.rangeHorizontalInitX and cX <= self.rangeHorizontalEndX and cY >= self.rangeHorizontalInitY and cY <= self.rangeHorizontalEndY + 15)):
                     cv2.circle(image_delimited, (cX, cY), 7, (255, 0, 0), -1)
-                # print("Center %s" % (str(M)))
-                (x, y, w, h) = cv2.boundingRect(c)
+                    (x, y, w, h) = cv2.boundingRect(c)
+                    
+                    cv2.line(image_delimited, (cX, cY),(x,y), (0,255,0),3)
+                else:
+                    (x, y, w, h) = cv2.boundingRect(c)
                 if h * w > 7600:
                     continue
                 
@@ -276,10 +347,10 @@ class Tracker(object):
                         self.confirmCentro = 0
                         # print("Esquerda")
                   
-                cv2.rectangle(image_delimited, (x, y), (x + w, y + h), (0, 255, 0), 2)
+              
                 
                 continue
-            
+
             # SE A QUANTIDADE DE FRAMES ATUAL FOR IGUAL A QUANTIDADE DE FRAMES FINAL DO VIDEO, SETA O UTLIMO TIMER NA ULTIMA VARIAVEL
             # POR EXEMPLO, SE O RATO PAROU NO BRACO DE BAIXO POR ULTIMO, AO ENTRAR NESSA CONDICAO, ADICIONA O VALOR DO TIMER NA VARIAVEL DE BAIXO
             if(int(self.video.get(cv2.CAP_PROP_POS_FRAMES)) == int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))):
@@ -293,22 +364,41 @@ class Tracker(object):
                     self.tempoTotalBaixo += (int(self.video.get(cv2.CAP_PROP_POS_FRAMES))  - self.timerStartado)  / self.video.get(cv2.CAP_PROP_FPS)
                 elif(self.confirmCima >= 3):
                     self.tempoTotalCima +=  (int(self.video.get(cv2.CAP_PROP_POS_FRAMES)) - self.timerCima) / self.video.get(cv2.CAP_PROP_FPS)
-            
+        
             # PRINTAR OS VALORES NA TELA    
-            cv2.putText(frame,'Timer Centro: ' +  str(round(self.tempoTotalCentro,2)), (35, 35), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,0,0))
-            cv2.putText(frame,'Timer Cima: ' +  str(round(self.tempoTotalCima,2)), (35, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,0,0))
-            cv2.putText(frame,'Timer Direita: ' +  str(round(self.tempoTotalDireita,2)), (35, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,0,0))
-            cv2.putText(frame,'Timer Baixo: ' +  str(round(self.tempoTotalBaixo,2)), (35, 95), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,0,0))
-            cv2.putText(frame,'Timer Esquerda: ' +  str(round(self.tempoTotalEsquerda,2)), (35, 115), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,0,0))
-            cv2.putText(frame,'Total Cruzamentos: ' +  str(round(self.totalCruzamentos,2)), (35, 135), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,0,0))
-            cv2.putText(frame,'Total Bracos Abertos: ' +  str(round(self.totalBracosAbertos,2)), (35, 155), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,0,0))
-            cv2.putText(frame,'Total Bracos Fechados: ' +  str(round(self.totalBracosFechados,2)), (35, 175), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,0,0))
+            cv2.putText(frame,'Timer Centro: ' +  str(round(self.tempoTotalCentro,2)), (35, 35), cv2.FONT_HERSHEY_SIMPLEX, 1.1 , (255,0,0))
+            cv2.putText(frame,'Timer Cima: ' +  str(round(self.tempoTotalCima,2)), (35, 65), cv2.FONT_HERSHEY_SIMPLEX, 1.1 , (255,0,0))
+            cv2.putText(frame,'Timer Direita: ' +  str(round(self.tempoTotalDireita,2)), (35, 95), cv2.FONT_HERSHEY_SIMPLEX, 1.1 , (255,0,0))
+            cv2.putText(frame,'Timer Baixo: ' +  str(round(self.tempoTotalBaixo,2)), (35, 125), cv2.FONT_HERSHEY_SIMPLEX, 1.1 , (255,0,0))
+            cv2.putText(frame,'Timer Esquerda: ' +  str(round(self.tempoTotalEsquerda,2)), (35, 155), cv2.FONT_HERSHEY_SIMPLEX, 1.1 , (255,0,0))
+            # cv2.putText(frame,'Total Cruzamentos: ' +  str(round(self.totalCruzamentos,2)), (35, 135), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
+            # cv2.putText(frame,'Total Bracos Abertos: ' +  str(round(self.totalBracosAbertos,2)), (35, 155), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
+            # cv2.putText(frame,'Total Bracos Fechados: ' +  str(round(self.totalBracosFechados,2)), (35, 175), cv2.FONT_HERSHEY_SIMPLEX, 0.5 , (0,255,0))
+            # cv2.rectangle(frame, (self.roi[0], self.roi[1]), (self.roi[0] + self.roi[2], self.roi[1] + self.roi[3]), (200, 0, 0), 2)
+            cv2.rectangle(frame, (int(self.rangeVerticalInitX), int(self.rangeVerticalInitY)), (int(self.rangeVerticalEndX), int(self.rangeVerticalEndY) + 15), (200, 0, 0), 2)
+            cv2.rectangle(frame, (int(self.rangeHorizontalInitX), int(self.rangeHorizontalInitY)), (int(self.rangeHorizontalEndX), int(self.rangeHorizontalEndY) + 15), (200, 0, 0), 2)
+            
+            if(int(self.video.get(cv2.CAP_PROP_POS_FRAMES)) == int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))):
+                print("Created Test")
+                print(self.animal_code)
+                animal = Animal.objects.filter(code_number=self.animal_code)
+                # breakpoint()
+                # self.create_test()
+                timein_open = self.tempoTotalCima + self.tempoTotalBaixo
+                timein_close = self.tempoTotalDireita + self.tempoTotalEsquerda
+                timein_center = self.tempoTotalCentro
+                teste = Test.objects.create(animal=animal[0], timein_open=timein_open, timein_close=timein_close, timein_center=timein_center)
+                print("Foi!")
+                print(teste)
+                
+                # teste.timein_open = self.tempoTotalCima + self.tempoTotalBaixo
+                # teste.timein_close = self.tempoTotalDireita + self.tempoTotalEsquerda
+                # teste.save()
             
             ret, jpeg = cv2.imencode('.jpg', frame)
             return jpeg.tobytes()
         
         else:
-            print("roi nao selecionado")
             success, image = self.video.read()
             ret, jpeg = cv2.imencode('.jpg', image)
             return jpeg.tobytes()
@@ -323,6 +413,12 @@ class Tracker(object):
         return
         # return JsonResponse({'direction': str(location)})
 
+
+    def create_test():
+        animal = Animal.objects.filter(code_number=self.animal_code)
+        timein_open = self.tempoTotalCima + self.tempoTotalBaixo
+        timein_close = self.tempoTotalDireita + self.tempoTotalEsquerda
+        teste = Test.objects.create(animal=animal, timein_open=timein_open, timein_close=timein_close)
 # tempo no centro
 # numero sde cruzamento no centro
 # porcentagem de permanencia em cada braço

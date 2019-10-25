@@ -1,8 +1,10 @@
 from django.http import HttpResponse, StreamingHttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from django.views import generic, View
+from .models import Animal, Test
 from .tracker import Tracker
+import xlsxwriter
 import time
 
 class TestSetup:
@@ -49,12 +51,15 @@ class Analysis(View):
         mazeSelectedArea.initY = request.POST.get('initY')
         mazeSelectedArea.areaW = request.POST.get('areaWidth')
         mazeSelectedArea.areaH = request.POST.get('areaHeight')
+        animal_value = request.POST.get('animal_value')
         roi_array = []
         roi_array.append(int(mazeSelectedArea.initX))
         roi_array.append(int(mazeSelectedArea.initY))
         roi_array.append(int(mazeSelectedArea.areaW))
         roi_array.append(int(mazeSelectedArea.areaH))
         TestSetup.getInstance.roi = roi_array
+        TestSetup.getInstance.animal = animal_value
+        print("Animal: %s" % (TestSetup.getInstance.animal))
         print("TestSetup videoPath %s" % (TestSetup.getInstance.videoPath))
         print("TestSetup roi %s" % (TestSetup.getInstance.roi))
 
@@ -72,7 +77,7 @@ class Analysis(View):
                     return StreamingHttpResponse(getFirstFrame(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi)), content_type="multipart/x-mixed-replace;boundary=frame")
                 else:
                     print("Roi nao é nulo")
-                    return StreamingHttpResponse(generateFrames(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi)),content_type="multipart/x-mixed-replace;boundary=frame")
+                    return StreamingHttpResponse(generateFrames(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi, TestSetup.getInstance.animal)),content_type="multipart/x-mixed-replace;boundary=frame")
             else:
                 print("Rendering image from Camera IP")
                 return StreamingHttpResponse(generateFrames(Tracker(TestSetup.getInstance.videoPath, TestSetup.getInstance.roi)),content_type="multipart/x-mixed-replace;boundary=frame")
@@ -80,6 +85,7 @@ class Analysis(View):
             pass
 
     def startTest(request):
+        print("To no StartTest!!!")
         print(TestSetup.getInstance.roi)
         return render(request, 'mouse_tracker/index.html', {})
 
@@ -90,8 +96,10 @@ class CameraIPAnalysis(Analysis):
     def renderWithoutAnalysis(request):
         TestSetup.getInstance.roi = None
         TestSetup.getInstance.videoPath = 0
-        # startAnalysis = False
-        context = {}
+        animals = Animal.objects.all()
+        context = {
+            'animals': animals
+        }
         return render(request, 'mouse_tracker/index.html', context)
 
     
@@ -100,17 +108,26 @@ class VideoFileAnalysis(Analysis):
 
     def get_filepath(request):
         print("Chamando get_filepath")
+        animals = Animal.objects.all()
+        context = {
+                'animals': animals
+        }
         if request.method == "POST":
             print("Entrou no metodo POST")
             print(str(request.POST.get('filepath_value')))
             TestSetup.getInstance.videoPath = str(request.POST.get('filepath_value'))
             TestSetup.getInstance.roi = 0
-            return render(request, 'mouse_tracker/index.html', {})
-        return JsonResponse({})
+            return render(request, 'mouse_tracker/index.html', context)
+        return render(request, 'mouse_tracker/index.html', context)
+        # return JsonResponse({})
 
     def renderWithoutAnalysis(request):
         TestSetup.getInstance.roi = None
-        context = {}
+        animals = Animal.objects.all()
+        context = {
+            'animals': animals
+        }
+        print("Render without analysis!!!")
         return render(request, 'mouse_tracker/index.html', context)
 
 
@@ -133,10 +150,136 @@ def generateFrames(tracker):
             time.sleep(0.010)
             yield(b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + 
             b'\r\n\r\n')
-    except:
-        return
+        print("Teste pode ser criado!!!")
+    except Exception as e: 
+        print(e)
+ 
 
 def home(request):
-    return render(request, 'mouse_tracker/home.html', {})
+    animals = Animal.objects.all()
+    context = {
+        'animals': animals
+    }
+    return render(request, 'mouse_tracker/home.html', context)
 
+class Records(View):
 
+    def get_animals(request):
+        animals = Animal.objects.all()
+        context = {
+            'animals': animals
+        }
+        return render(request, 'mouse_tracker/config.html', context)
+
+    def create_animal(request):
+        apelido = request.POST.get('apelido')
+        codigo = request.POST.get('codigo')
+        error = None
+        animal = Animal.objects.filter(code_number=codigo)
+        if animal:
+            error = "Animal Existente"
+        else:
+            animal = Animal(nickname=apelido, code_number=codigo)
+            animal.save()
+        animals = Animal.objects.all()
+        context = {
+            'animals': animals,
+            'error': error
+        }
+        print("Clicando no delete!")
+        return render(request, 'mouse_tracker/config.html', context)
+
+    def delete_animal(request):
+        codigo = request.POST.get('delete_id')
+        animal = Animal.objects.filter(code_number=codigo)
+        if animal:
+            print("Animal existe!!!!")
+            animal.delete()
+        animals = Animal.objects.all()
+        context = {
+            'animals': animals
+        }
+        return render(request, 'mouse_tracker/config.html', context)
+
+    def update_animal(request):
+        apelido = request.POST.get('nickname')
+        codigo = request.POST.get('code_number')
+        animal = Animal.objects.filter(code_number=codigo).update(
+             nickname=apelido,
+            code_number=codigo
+        )
+        animals = Animal.objects.all()
+        context = {
+            'animals': animals
+        }
+        return redirect('/animais', context)
+        # return render(request, 'mouse_tracker/config.html', context)
+
+    def get_tests(request):
+        tests = Test.objects.all()
+        print(tests)
+        context = {
+            'tests': tests
+        }
+        return render(request, 'mouse_tracker/historico.html', context)
+
+    def exportar_linha(request):
+        test_id = request.POST.get('test_id')
+        teste = Test.objects.get(id=test_id)
+        workbook = xlsxwriter.Workbook('{}{}.xlsx'.format(test_id, teste.animal.nickname))
+        worksheet = workbook.add_worksheet()
+
+        row = 0
+        col = 0
+        i = 0
+
+        properties = ['Teste ID', 'Apelido Animal', 'Cod Animal', 'T Aberto', 'T Fechado', 'T Centro', 'Cruzamentos']
+
+        
+        for i in range(0,6):
+            worksheet.write(row, i, properties[i])
+        row = 1
+        worksheet.write(row, 0, teste.id)
+        worksheet.write(row, 1, teste.animal.nickname)
+        worksheet.write(row, 2, teste.animal.code_number)
+        worksheet.write(row, 3, teste.timein_open)
+        worksheet.write(row, 4, teste.timein_close)
+        worksheet.write(row, 5, teste.timein_center)
+        worksheet.write(row, 6, teste.cruzamentos)
+
+        workbook.close()
+        tests = Test.objects.all()
+        context = {
+            'tests': tests
+        }
+        return render(request, 'mouse_tracker/historico.html', context)
+
+    def exportar_todos(request):
+        workbook = xlsxwriter.Workbook('historico.xlsx')
+        worksheet = workbook.add_worksheet()
+
+        row = 0
+        col = 0
+        i = 0
+
+        properties = ['Teste ID', 'Apelido Animal', 'Cod Animal', 'T Aberto', 'T Fechado', 'T Centro', 'Cruzamentos']
+        testes = Test.objects.all()
+        for i in range(0,6):
+            worksheet.write(row, i, properties[i])
+        row = 1
+        for t in testes:
+            worksheet.write(row, 0, t.id)
+            worksheet.write(row, 1, t.animal.nickname)
+            worksheet.write(row, 2, t.animal.code_number)
+            worksheet.write(row, 3, t.timein_open)
+            worksheet.write(row, 4, t.timein_close)
+            worksheet.write(row, 5, t.timein_center)
+            worksheet.write(row, 6, t.cruzamentos)
+            row += 1
+            
+        workbook.close()
+        tests = Test.objects.all()
+        context = {
+            'tests': tests
+        }
+        return render(request, 'mouse_tracker/historico.html', context)

@@ -7,11 +7,23 @@ function cancelAreaSelected() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
+// var currentAnimal = 0
+
+// $('#dropdown_animal').change(function() {
+//     alert($('#dropdown_animal').val());
+// }) 
+
+
+
 function confirmAreaSelected() {
+    console.log("Confirming selected area !!!!")
     var initX = rect.startX
     var initY = rect.startY
     var areaWidth = rect.w
     var areaHeight = rect.h
+    var animal = $('#dropdown_animal').val()
+    alert(animal);
+    console.log(animal);
     $.ajax({
         type: "POST",
         url: "/getROI",
@@ -20,6 +32,7 @@ function confirmAreaSelected() {
             'initY': initY,
             'areaWidth': areaWidth,
             'areaHeight': areaHeight,
+            'animal_value': animal,
             csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
         },
         dataType: 'json',
@@ -27,6 +40,10 @@ function confirmAreaSelected() {
         }
     });
 }
+
+function excluir(animal_id) {
+    document.getElementById('delete_id').value = animal_id
+} 
 
 function startTest() {
     $.ajax({
@@ -124,6 +141,36 @@ function mouseMove(e) {
 function draw() {
     ctx.setLineDash([6]);
   ctx.strokeRect(rect.startX, rect.startY, rect.w, rect.h);
+}
+
+function editClicked(nickname, code_number) {
+    document.getElementById("apelido").value = nickname;
+    var codigo = document.getElementById("codigo");
+    codigo.disabled = true;
+    codigo.value = code_number;
+    document.getElementById('alterar').disabled = false;
+    document.getElementById('salvar').disabled = true;
+}
+
+function alterarAniaml(event) {
+    event.preventDefault();
+    var apelido = document.getElementById('apelido').value;
+    var codigo = document.getElementById('codigo').value;
+    $.ajax({
+        type: "POST",
+        url: "/updateAnimal",
+        data: {
+            'nickname': apelido,
+            'code_number': codigo,
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        dataType: 'json',
+        success: function (data) {
+            
+        }
+    });
+    console.log("Reload data!!!");
+    location.reload(true);
 }
 
 init();

@@ -2,9 +2,9 @@
 {% block content %}
 <div class="container">
   <div class="header">
+    <h1>Teste</h1>
   </div>
   <div class="content">
-
     <div class="videoframe">
         <img id="ratVideo" width="848" height="480" class="videoframe video" src="{% url 'stream_image' %}">
       <canvas id="myCanvas" width="848" height="480">
@@ -12,31 +12,23 @@
     <div class="form">
       <form action="{% url 'start_test' %}" method="POST">
         {% csrf_token %}
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="exampleInputPassword1">Distância (cm)</label>
           <input type="text" class="form-control" id="exampleInputDistancia" placeholder="0.0">
         </div>
         <div class="form-group">
           <label for="exampleInputVelocidade">Velocidade (cm/s)</label>
           <input type="text" class="form-control" id="exampleInputVelocidade" placeholder="0.0">
-        </div>
+        </div> -->
         <div class="form-group">
           <label for="exampleFormControlSelect1">Animal</label>
-          <select class="form-control" id="exampleFormControlSelect1">
-            <option>Cadena</option>
-            <option>Matheus</option>
-            <option>Ditt</option>
+          <select class="form-control" id="dropdown_animal">
+           {% for animal in animals %}
+           <option id='option_animal' value="{{animal.code_number}}">{{animal.code_number}}:{{animal.nickname}}</option>
+           {% endfor %}
           </select>
         </div>
         <input type="submit" id="iniciar" onclick="confirmAreaSelected()" value="Iniciar Teste" class="btn btn-primary">
-      </form>
-    </div>
-    <div class="timer">
-      <h3>This is a timer</h3>
-      <form action="{% url 'timer' %}">
-        {% if location %}
-        <h4>timer caraio!!!</h4>
-        {% endif %}        
       </form>
     </div>
     <!-- <div class="areaSelection">

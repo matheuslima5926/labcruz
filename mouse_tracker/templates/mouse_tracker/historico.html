@@ -1,0 +1,57 @@
+{% extends 'mouse_tracker/base.html' %}
+{% block content %}
+<div class="hitorico-container">
+    <br>
+    <br>
+    <h1>Historico de Testes</h1>
+    <br>
+    <div class="hitorico-tabela">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Teste ID</th>
+                    <th>Apelido Animal</th>
+                    <th>Cod Animal</th>
+                    <th>T Aberto</th>
+                    <th>T Fechado</th>
+                    <th>T Centro</th>
+                    <th>Nº Cruzamentos</th>
+                    <th>Exportar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for teste in tests %}
+                <tr>
+                    <td>{{teste.id}}</td>
+                    <td>{{teste.animal.nickname}}</td>
+                    <td>{{teste.animal.code_number}}</td>
+                    <td>{{teste.timein_open|floatformat:'2'}}</td>
+                    <td>{{teste.timein_close|floatformat:'2'}}</td>
+                    <td>{{teste.timein_center|floatformat:'2'}}</td>
+                    <td>{{teste.timein_center|floatformat:'2'}}</td>
+                    <td>
+                        <form action="{% url 'exportar' %}" method="POST">
+                            {% csrf_token %}
+                            <!-- <input type="hidden" value="{{teste.id}}" name="test_id"> -->
+                            <button class="btn btn-primary" name="test_id" value="{{teste.id}}">Exportar</button>
+                        </form>
+                    </td>
+                    <!-- <td>
+                        <form action="{% url 'deleteAnimal' %}" method="POST">{% csrf_token %}
+                            <input type="submit" class="btn btn-danger" name="delete" value="Excluir">
+                            <input type="hidden" name="delete_id" id="delete_id" value="{{animal.code_number}}">
+                        </form>
+                    </td> -->
+                </tr>
+                {% endfor %} 
+            </tbody>
+        </table>
+        <form action="{% url 'exportar_todos' %}" method="GET">
+            {% csrf_token %}
+            <button class="btn btn-success">Exportar Todos</button>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}
