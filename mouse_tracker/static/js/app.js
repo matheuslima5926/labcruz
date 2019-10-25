@@ -41,6 +41,10 @@ function confirmAreaSelected() {
     });
 }
 
+function excluir(animal_id) {
+    document.getElementById('delete_id').value = animal_id
+} 
+
 function startTest() {
     $.ajax({
         type: "POST",

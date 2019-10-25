@@ -7,7 +7,7 @@
     <div class="content">
         <div class="animal-form">
             {% if error %}
-            <p style="color: red">Um animal com esse código já está registrado</p>
+            <p style="color: red">Um animal com esse código já está registrado</p> 
             {% endif %}
             <form action="{% url 'saveAnimal' %}" method="POST">
                 {% csrf_token %}
